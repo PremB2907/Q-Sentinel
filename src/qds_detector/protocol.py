@@ -104,12 +104,13 @@ def run_qds_experiment(config: ExperimentConfig) -> Dict[str, Any]:
         sv_in = get_statevector(state_name)
         fidelity = calculate_fidelity(sv_in, sv_in)
 
-    # 3. Evaluate Deterministic Threat Detector
+    # 3. Evaluate Two-Tier Deterministic Threat Detector
     detection = evaluate_threat_detection(
         observed_counts=counts,
         baseline_probs=baseline_probs,
         fidelity=fidelity,
         context=context,
+        basis=basis,
         thresholds=config.thresholds
     )
     
@@ -130,5 +131,9 @@ def run_qds_experiment(config: ExperimentConfig) -> Dict[str, Any]:
         detection_result=detection.to_dict(),
         execution_time_ms=elapsed_ms
     )
+    
+    # Expose evidence dict and threat category for UI and telemetry
+    exp_record["evidence"] = detection.evidence
+    exp_record["threat_category"] = detection.threat_category
     
     return exp_record

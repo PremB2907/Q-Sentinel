@@ -1,6 +1,7 @@
 """
-Q-Sentinel: Quantum-Inspired Cyber Threat Detection for Digital Signature Security (SIH26141).
-Streamlit Dashboard Laboratory Interface.
+Q-Sentinel: Quantum-Statistical Threat Detection for Teleportation-Based Digital Signatures.
+SIH26141 • Egreen Quanta
+Streamlit Interactive Security Laboratory UI.
 """
 
 import time
@@ -14,66 +15,87 @@ import plotly.express as px
 from qds_detector.config import ExperimentConfig, SessionContext, ThresholdConfig
 from qds_detector.states import PAULI_STATES, STATE_ALIASES, get_expected_probabilities
 from qds_detector.protocol import run_qds_experiment
-from qds_detector.attacks import simulate_attack_counts, apply_forgery_attack, apply_channel_attack
-from qds_detector.detector import evaluate_threat_detection
-from qds_detector.metrics import compute_batch_metrics
 
 
 # Page Configuration
 st.set_page_config(
-    page_title="Q-Sentinel | QDS Threat Detection Lab",
+    page_title="Q-Sentinel | Quantum Digital Signature Security Lab",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Cyber-Security Laboratory Theme
+# Custom CSS for Hero Cards and Security Laboratory Theme
 st.markdown("""
 <style>
-    /* Dark Cyber Theme Adjustments */
     .stApp {
         background-color: #0d1117;
         color: #c9d1d9;
     }
-    .css-1d37w0k {
-        background-color: #161b22;
+    .hero-accept {
+        background: linear-gradient(135deg, rgba(46, 160, 67, 0.25) 0%, rgba(46, 160, 67, 0.05) 100%);
+        border: 2px solid #2ea043;
+        box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        margin-bottom: 20px;
     }
-    .metric-card {
+    .hero-reject {
+        background: linear-gradient(135deg, rgba(248, 81, 73, 0.25) 0%, rgba(248, 81, 73, 0.05) 100%);
+        border: 2px solid #f85149;
+        box-shadow: 0 0 20px rgba(248, 81, 73, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .hero-suspicious {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.25) 0%, rgba(210, 153, 34, 0.05) 100%);
+        border: 2px solid #d29922;
+        box-shadow: 0 0 20px rgba(210, 153, 34, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .hero-title-accept {
+        color: #3fb950;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+    .hero-title-reject {
+        color: #f85149;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+    .hero-title-suspicious {
+        color: #e3b341;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+    .hero-threat-tag {
+        background-color: rgba(248, 81, 73, 0.2);
+        color: #ff7b72;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 8px;
+    }
+    .tier-box {
         background-color: #161b22;
         border: 1px solid #30363d;
         border-radius: 8px;
-        padding: 16px;
-        text-align: center;
-    }
-    .decision-accept {
-        background-color: rgba(46, 160, 67, 0.15);
-        border: 2px solid #2ea043;
-        color: #3fb950;
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .decision-suspicious {
-        background-color: rgba(210, 153, 34, 0.15);
-        border: 2px solid #d29922;
-        color: #e3b341;
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .decision-reject {
-        background-color: rgba(248, 81, 73, 0.15);
-        border: 2px solid #f85149;
-        color: #f85149;
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
+        padding: 14px;
+        margin-bottom: 12px;
     }
     .badge-no-ai {
         background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
@@ -89,46 +111,42 @@ st.markdown("""
 
 # Header Section
 st.title("🛡️ Q-SENTINEL")
-st.markdown("### Quantum-Inspired Cyber Threat Detection for Digital Signature Security")
+st.markdown("### Quantum-Statistical Threat Detection for Teleportation-Based Digital Signatures")
 st.markdown("""
 <span class="badge-no-ai">SIH26141 • EGREEN QUANTA</span> &nbsp;&nbsp;
-<span style="color:#8b949e; font_size:14px;">Rule-Based Quantum Statistical Detector • Strictly NO AI/ML</span>
+<span style="color:#8b949e; font-size:14px;">Deterministic Quantum Hypothesis Testing • Basis-Calibrated • Strictly NO AI/ML</span>
 """, unsafe_allow_html=True)
 st.divider()
 
 # Sidebar Control Panel
-st.sidebar.header("🔬 Experiment Control Panel")
+st.sidebar.header("🔬 Protocol Experiment Setup")
 
 # 1. Quantum State Selection
 input_state = st.sidebar.selectbox(
-    "Input Signature / Test Qubit State",
+    "Input Signature State (|ψ⟩)",
     options=["|0>", "|1>", "|+>", "|->", "|+i>", "|-i>"],
-    index=0,
+    index=4,  # Default to |+i>
     help="Select one of 6 Pauli basis eigenstates."
 )
 
 # 2. Measurement Basis Selection
-basis_options = {"Z (Computational)": "Z", "X (Hadamard)": "X", "Y (Phase)": "Y"}
-basis_label = st.sidebar.selectbox(
-    "Verification Measurement Basis",
-    options=list(basis_options.keys()),
-    index=0
-)
+basis_options = {"Y (Phase Basis)": "Y", "Z (Computational)": "Z", "X (Hadamard)": "X"}
+basis_label = st.sidebar.selectbox("Verification Measurement Basis", options=list(basis_options.keys()), index=0)
 measurement_basis = basis_options[basis_label]
 
 # 3. Shot Count
-shots = st.sidebar.slider("Number of Measurement Shots (N)", min_value=1000, max_value=10000, value=5000, step=500)
+shots = st.sidebar.slider("Measurement Shot Count (N)", min_value=1000, max_value=10000, value=5000, step=500)
 
 st.sidebar.divider()
 st.sidebar.header("⚔️ Threat & Attack Injection")
 
 attack_type_map = {
-    "None (Legitimate Teleportation)": "none",
-    "State Forgery (State Perturbation)": "forgery",
+    "None (Legitimate Signature)": "none",
+    "State Forgery (Quantum State Perturbation)": "forgery",
+    "Channel Manipulation (Depolarizing Noise)": "channel_depolarizing",
     "Channel Manipulation (Bit-Flip Noise)": "channel_bit_flip",
     "Channel Manipulation (Phase-Flip Noise)": "channel_phase_flip",
-    "Channel Manipulation (Depolarizing Noise)": "channel_depolarizing",
-    "Replay Attack (Stale Nonce / Transcript Reuse)": "replay",
+    "Replay Attack (Stale Nonce / Session Reuse)": "replay",
     "Impersonation Attack (Unauthorized Signer ID)": "impersonation"
 }
 
@@ -136,30 +154,23 @@ selected_attack_label = st.sidebar.selectbox("Attack Scenario", options=list(att
 attack_type = attack_type_map[selected_attack_label]
 
 if attack_type not in ["none", "replay", "impersonation"]:
-    attack_severity = st.sidebar.slider("Attack Severity (λ / Noise Probability)", min_value=0.0, max_value=1.0, value=0.35, step=0.05)
+    attack_severity = st.sidebar.slider("Attack Severity (λ)", min_value=0.0, max_value=1.0, value=0.65, step=0.05)
 else:
     attack_severity = 0.0
 
 st.sidebar.divider()
-st.sidebar.header("⚙️ Calibrated Detector Thresholds")
+st.sidebar.header("⚙️ Detector Calibration Settings")
 
 alpha = st.sidebar.number_input("Significance Level (α)", min_value=0.001, max_value=0.05, value=0.01, step=0.001, format="%.3f")
-min_fidelity_accept = st.sidebar.number_input("Min Fidelity Accept", min_value=0.80, max_value=1.00, value=0.98, step=0.01)
-max_dev_accept = st.sidebar.number_input("Max Probability Dev Accept", min_value=0.01, max_value=0.10, value=0.03, step=0.005)
+min_fidelity_accept = st.sidebar.number_input("Min Fidelity Threshold", min_value=0.80, max_value=1.00, value=0.98, step=0.01)
 
 thresholds = ThresholdConfig(
     shots=shots,
     alpha=alpha,
-    min_fidelity_accept=min_fidelity_accept,
-    max_probability_deviation_accept=max_dev_accept,
-    min_fidelity_suspicious=0.90,
-    max_probability_deviation_suspicious=0.10
+    min_fidelity_accept=min_fidelity_accept
 )
 
-# Run Button
-run_experiment = st.sidebar.button("⚡ Run Quantum Teleportation & Verification", type="primary", use_container_width=True)
-
-# Build Experiment Configuration
+# Build & Run Experiment
 exp_config = ExperimentConfig(
     input_state=input_state,
     measurement_basis=measurement_basis,
@@ -170,111 +181,138 @@ exp_config = ExperimentConfig(
     thresholds=thresholds
 )
 
-# Execute Experiment
 exp_record = run_qds_experiment(exp_config)
 
 # Main Dashboard Navigation Tabs
 tab1, tab2, tab3, tab4 = st.tabs([
-    "🎯 Live Laboratory & Detector",
-    "📈 Attack Strength Sensitivity Sweep",
-    "📐 Statistical Model & Physics Inspector",
+    "🎯 Hero Verification Lab",
+    "📈 Attack Sensitivity Benchmark",
+    "📐 Two-Tier Architecture & Math",
     "📄 Reproducibility & Record Exporter"
 ])
 
 # ---------------------------------------------------------
-# TAB 1: Live Verification Lab & Threat Detector
+# TAB 1: Hero Verification Lab
 # ---------------------------------------------------------
 with tab1:
-    col_dec, col_meta = st.columns([1.2, 1.8])
-    
-    with col_dec:
-        decision = exp_record["decision"]
-        reason = exp_record["reason"]
-        
-        if decision == "ACCEPT":
-            st.markdown(f'<div class="decision-accept">✅ DECISION: ACCEPT</div>', unsafe_allow_html=True)
-        elif decision == "SUSPICIOUS":
-            st.markdown(f'<div class="decision-suspicious">⚠️ DECISION: SUSPICIOUS</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="decision-reject">❌ DECISION: REJECT</div>', unsafe_allow_html=True)
-            
-        st.markdown(f"**Rationale**: {reason}")
-        
-    with col_meta:
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("State Fidelity F", f"{exp_record['fidelity']:.4f}")
-        m2.metric("Prob Deviation", f"{exp_record['deviation']:.4f}")
-        m3.metric("z-score", f"{exp_record['z_score']:.2f}")
-        m4.metric("p-value", f"{exp_record['p_value']:.4e}")
-        
-        st.caption(f"⏱️ Teleportation + Analysis Latency: **{exp_record['execution_time_ms']:.2f} ms** | Shots: **{exp_record['shots']}**")
+    decision = exp_record["decision"]
+    reason = exp_record["reason"]
+    evidence = exp_record["evidence"]
+    tier1 = evidence.get("tier1_protocol", {})
+    tier2 = evidence.get("tier2_quantum", {})
+    threat_cat = exp_record.get("threat_category", "NONE")
+
+    # Hero Callout Card
+    if decision == "ACCEPT":
+        st.markdown(f"""
+        <div class="hero-accept">
+            <div class="hero-title-accept">🟢 SIGNATURE VALIDATED</div>
+            <div style="color: #8b949e; font-size: 16px;">{reason}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    elif decision == "SUSPICIOUS":
+        st.markdown(f"""
+        <div class="hero-suspicious">
+            <div class="hero-title-suspicious">⚠️ SIGNATURE SUSPICIOUS</div>
+            <div style="color: #8b949e; font-size: 16px;">{reason}</div>
+            <div class="hero-threat-tag">POTENTIAL THREAT: {threat_cat}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div class="hero-reject">
+            <div class="hero-title-reject">🔴 SIGNATURE REJECTED</div>
+            <div style="color: #8b949e; font-size: 16px;">{reason}</div>
+            <div class="hero-threat-tag">DETECTED THREAT: {threat_cat}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Verification Metrics Row
+    m1, m2, m3, m4, m5, m6 = st.columns(6)
+    m1.metric("Fidelity F", f"{exp_record['fidelity']:.4f}")
+    m2.metric("Prob Deviation Δ", f"{exp_record['deviation']:.4f}")
+    m3.metric("z-score", f"{exp_record['z_score']:.2f}")
+    m4.metric("p-value", f"{exp_record['p_value']:.4e}")
+    m5.metric("Freshness", "VALID" if exp_record['freshness_valid'] else "STALE ❌")
+    m6.metric("Identity", "VALID" if exp_record['identity_valid'] else "MISMATCH ❌")
 
     st.divider()
-    
-    # Live Measurement Plots
-    col_chart, col_circuit = st.columns([1.5, 1.0])
-    
-    with col_chart:
-        st.subheader("📊 Quantum Measurement Outcome Distribution")
-        
-        obs_p = exp_record["observed_probability"]
-        base_p = exp_record["baseline_probability"]
-        
-        df_plot = pd.DataFrame({
-            "Outcome": ["+1 Eigenstate", "-1 Eigenstate"],
-            "Observed Probability": [obs_p.get("+1", 0), obs_p.get("-1", 0)],
-            "Expected Baseline": [base_p.get("+1", 0), base_p.get("-1", 0)]
-        })
-        
-        fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=df_plot["Outcome"],
-            y=df_plot["Observed Probability"],
-            name="Observed (Empirical Shots)",
-            marker_color="#388bfd"
-        ))
-        fig.add_trace(go.Bar(
-            x=df_plot["Outcome"],
-            y=df_plot["Expected Baseline"],
-            name="Legitimate Baseline",
-            marker_color="#2ea043"
-        ))
-        fig.update_layout(
-            barmode="group",
-            template="plotly_dark",
-            paper_bgcolor="#161b22",
-            plot_bgcolor="#161b22",
-            height=320,
-            margin=dict(l=20, r=20, t=30, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-        )
-        st.plotly_chart(fig, use_container_width=True)
 
-    with col_circuit:
-        st.subheader("🌀 3-Qubit Teleportation Protocol")
-        st.markdown(f"""
-        - **Input State**: `{input_state}` initialized on $q_0$
-        - **Entangled Bell Pair**: $|\Phi^+\rangle = \\frac{{|00\\rangle + |11\\rangle}}{{\\sqrt{{2}}}}$ on $(q_1, q_2)$
-        - **Bell Measurement**: Applied on $(q_0, q_1)$
-        - **Pauli Corrections**: Conditional $X/Z$ applied on receiver $q_2$
-        - **Verification Basis**: `{measurement_basis}`-basis projection on $q_2$
-        """)
+    # Two-Tier Architecture Breakdown
+    c_tier1, c_tier2 = st.columns(2)
+
+    with c_tier1:
+        st.markdown("#### 🔒 Tier 1: Protocol Context Layer")
+        fresh_status = "🟢 Passed (Nonce Active)" if exp_record['freshness_valid'] else "🔴 Failed (Nonce Stale / Replayed)"
+        ident_status = "🟢 Passed (Signer Key Verified)" if exp_record['identity_valid'] else "🔴 Failed (Signer Key Mismatch)"
         
-        st.info(f"""
-        **Protocol Context**:
-        - Freshness / Nonce Valid: **{exp_record['freshness_valid']}**
-        - Signer Identity Match: **{exp_record['identity_valid']}**
-        """)
+        st.markdown(f"""
+        <div class="tier-box">
+            <b>Freshness Verification</b>: {fresh_status}<br>
+            <b>Session ID</b>: <code>{exp_config.session_context.session_id}</code><br>
+            <b>Signer Identity Verification</b>: {ident_status}<br>
+            <b>Signer Key ID</b>: <code>{exp_config.session_context.signer_id}</code>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c_tier2:
+        st.markdown("#### ⚛️ Tier 2: Quantum Statistics Layer")
+        max_thresh = thresholds.get_max_deviation_accept(measurement_basis)
+        dev_status = "🟢 Within Threshold" if exp_record['deviation'] <= max_thresh else "🔴 Threshold Exceeded"
+        
+        st.markdown(f"""
+        <div class="tier-box">
+            <b>Verification Basis</b>: <code>{measurement_basis}</code><br>
+            <b>Basis Calibrated Threshold</b>: Max Δ ≤ <b>{max_thresh:.4f}</b> ({dev_status})<br>
+            <b>State Fidelity F(ρ_in, ρ_out)</b>: <b>{exp_record['fidelity']:.4f}</b><br>
+            <b>Chi-Square Statistic χ²</b>: <b>{tier2.get('chi2_statistic', 0.0):.4f}</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Outcome Histogram Plot
+    st.subheader("📊 Projective Outcome Probability Distribution")
+    obs_p = exp_record["observed_probability"]
+    base_p = exp_record["baseline_probability"]
+    
+    df_plot = pd.DataFrame({
+        "Outcome": ["+1 Eigenstate", "-1 Eigenstate"],
+        "Observed Probability": [obs_p.get("+1", 0), obs_p.get("-1", 0)],
+        "Expected Baseline": [base_p.get("+1", 0), base_p.get("-1", 0)]
+    })
+    
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=df_plot["Outcome"],
+        y=df_plot["Observed Probability"],
+        name="Observed (Empirical Shots)",
+        marker_color="#388bfd"
+    ))
+    fig.add_trace(go.Bar(
+        x=df_plot["Outcome"],
+        y=df_plot["Expected Baseline"],
+        name="Legitimate Baseline",
+        marker_color="#2ea043"
+    ))
+    fig.update_layout(
+        barmode="group",
+        template="plotly_dark",
+        paper_bgcolor="#161b22",
+        plot_bgcolor="#161b22",
+        height=320,
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------------
-# TAB 2: Attack Severity Sensitivity Sweep
+# TAB 2: Attack Sensitivity Benchmark
 # ---------------------------------------------------------
 with tab2:
-    st.subheader("📈 Attack Severity Sensitivity Sweep (0.0 to 1.0)")
-    st.markdown("Evaluates detector response across increasing attack severity $\lambda$ without cherry-picking single data points.")
+    st.subheader("📈 Multi-Trial Attack Sensitivity Benchmark")
+    st.markdown("Evaluates detector response across increasing attack severity $\lambda$ without single-point bias.")
     
     sweep_attack = st.selectbox(
-        "Select Attack for Sweep",
+        "Select Attack Vector for Sweep",
         options=["forgery", "channel_depolarizing", "channel_bit_flip", "channel_phase_flip"],
         index=0
     )
@@ -298,9 +336,7 @@ with tab2:
             "decision": rec["decision"],
             "fidelity": rec["fidelity"],
             "deviation": rec["deviation"],
-            "p_value": rec["p_value"],
-            "rejected": 1 if rec["decision"] in ["REJECT", "SUSPICIOUS"] else 0,
-            "false_accept": 1 if (sev > 0.1 and rec["decision"] == "ACCEPT") else 0
+            "p_value": rec["p_value"]
         })
         
     df_sweep = pd.DataFrame(sweep_records)
@@ -322,42 +358,50 @@ with tab2:
     with c2:
         fig_dev = px.line(
             df_sweep, x="severity", y="deviation",
-            title="Probability Deviation max|p_obs - p_base| vs Attack Severity λ",
-            labels={"severity": "Attack Severity λ", "deviation": "Probability Deviation"},
+            title=f"Basis {measurement_basis} Probability Deviation Δ vs Severity λ",
+            labels={"severity": "Attack Severity λ", "deviation": "Probability Deviation Δ"},
             template="plotly_dark"
         )
-        fig_dev.add_hline(y=max_dev_accept, line_dash="dash", line_color="#3fb950", annotation_text="Max Accept Threshold")
+        max_t = thresholds.get_max_deviation_accept(measurement_basis)
+        fig_dev.add_hline(y=max_t, line_dash="dash", line_color="#3fb950", annotation_text=f"Max Δ Threshold ({max_t})")
         fig_dev.update_traces(line_color="#d29922", line_width=3)
         fig_dev.update_layout(paper_bgcolor="#161b22", plot_bgcolor="#161b22", height=320)
         st.plotly_chart(fig_dev, use_container_width=True)
 
 # ---------------------------------------------------------
-# TAB 3: Statistical Model & Physics Inspector
+# TAB 3: Two-Tier Architecture & Math Inspector
 # ---------------------------------------------------------
 with tab3:
-    st.subheader("📐 Mathematical & Statistical Foundation")
+    st.subheader("📐 Two-Tier Architecture & Scientific Methodology")
     
-    col_math1, col_math2 = st.columns(2)
+    st.info("""
+    **Core Design Principle (SIH Defense)**:  
+    The problem specification requires a quantum-principle-based detector without AI/ML. Our approach therefore uses directly interpretable measurement statistics, calibrated confidence bounds and deterministic hypothesis-testing rules. Every decision can be traced back to an observable quantum measurement rather than a learned model.
+    """)
     
-    with col_math1:
-        st.markdown("#### 1. Pauli Projective Measurements")
-        st.latex(r"P_+ = \frac{I + \sigma}{2}, \quad P_- = \frac{I - \sigma}{2}, \quad \sigma \in \{X, Y, Z\}")
-        st.latex(r"p_\pm = \mathrm{Tr}(P_\pm \rho)")
-        st.markdown("Verification probabilities are evaluated directly from quantum projection operators without feeding raw states into learned ML models.")
+    col_m1, col_m2 = st.columns(2)
+    
+    with col_m1:
+        st.markdown("#### Tier 1: Protocol Context Layer")
+        st.markdown("""
+        - **Identity Verification**: Checks presented signer public key against expected context. Traps **Impersonation Attacks**.
+        - **Freshness Verification**: Validates unique challenge nonces and session timestamps. Traps **Replay Attacks**.
+        """)
         
-    with col_math2:
-        st.markdown("#### 2. Hypothesis Testing & z-Score")
-        st.latex(r"\hat{p} = \frac{k}{N}, \quad SE = \sqrt{\frac{p_0 (1-p_0)}{N}}")
-        st.latex(r"z = \frac{\hat{p} - p_0}{SE}, \quad p\text{-value} = 2(1 - \Phi(|z|))")
-        st.markdown("Observed counts $k$ are compared against calibrated baseline expected probability $p_0$ under standard normal distribution bounds.")
+    with col_m2:
+        st.markdown("#### Tier 2: Quantum Measurement Layer")
+        st.latex(r"P_\pm = \frac{I \pm \sigma}{2}, \quad p_\pm = \mathrm{Tr}(P_\pm \rho), \quad \sigma \in \{X, Y, Z\}")
+        st.latex(r"z = \frac{\hat{p} - p_0}{SE}, \quad \chi^2 = \sum \frac{(O_i - E_i)^2}{E_i}")
+        st.markdown("""
+        - Evaluates projective outcome probabilities $\hat{p}_\pm$ against basis-calibrated baseline expectations $p_0$.
+        - Traps **State Forgery** and **Quantum Channel Noise**.
+        """)
 
 # ---------------------------------------------------------
 # TAB 4: Reproducibility & Record Exporter
 # ---------------------------------------------------------
 with tab4:
-    st.subheader("📄 Experiment Record (Appendix A Specification)")
-    st.markdown("Reproducible experiment transcript exported as structured JSON matching SIH26141 blueprint standard.")
-    
+    st.subheader("📄 Reproducibility Record (Appendix A Standard)")
     json_str = json.dumps(exp_record, indent=2)
     st.code(json_str, language="json")
     

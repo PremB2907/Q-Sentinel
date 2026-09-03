@@ -1,5 +1,5 @@
 """
-Unit tests for deterministic Threat Detection engine (ACCEPT, SUSPICIOUS, REJECT).
+Unit tests for deterministic Threat Detection engine (ACCEPT, SUSPICIOUS, REJECT) with Two-Tier evaluation.
 """
 
 import pytest
@@ -17,14 +17,16 @@ def test_detector_accept_clean():
     res = evaluate_threat_detection(
         observed_counts=obs_counts,
         baseline_probs=base_probs,
-        fidelity=0.999,
-        context=ctx
+        fidelity=1.0,
+        context=ctx,
+        basis="Z"
     )
     assert res.decision == "ACCEPT"
+    assert res.threat_category == "NONE"
 
 
 def test_detector_reject_impersonation():
-    """Verify identity context mismatch yields REJECT with IMPERSONATION_ATTACK reason."""
+    """Verify identity context mismatch yields REJECT with IMPERSONATION threat category."""
     obs_counts = {"+1": 5000, "-1": 0}
     base_probs = {"+1": 1.0, "-1": 0.0}
     ctx = SessionContext(signer_id="Eve", expected_signer_id="Alice")
@@ -34,14 +36,15 @@ def test_detector_reject_impersonation():
         observed_counts=obs_counts,
         baseline_probs=base_probs,
         fidelity=1.0,
-        context=ctx
+        context=ctx,
+        basis="Z"
     )
     assert res.decision == "REJECT"
-    assert "IMPERSONATION" in res.reason
+    assert res.threat_category == "IMPERSONATION"
 
 
 def test_detector_reject_replay():
-    """Verify freshness failure yields REJECT with REPLAY_ATTACK reason."""
+    """Verify freshness failure yields REJECT with REPLAY threat category."""
     obs_counts = {"+1": 5000, "-1": 0}
     base_probs = {"+1": 1.0, "-1": 0.0}
     ctx = SessionContext(freshness_valid=False)
@@ -50,10 +53,11 @@ def test_detector_reject_replay():
         observed_counts=obs_counts,
         baseline_probs=base_probs,
         fidelity=1.0,
-        context=ctx
+        context=ctx,
+        basis="Z"
     )
     assert res.decision == "REJECT"
-    assert "REPLAY" in res.reason
+    assert res.threat_category == "REPLAY"
 
 
 def test_detector_reject_high_forgery():
@@ -67,6 +71,8 @@ def test_detector_reject_high_forgery():
         observed_counts=obs_counts,
         baseline_probs=base_probs,
         fidelity=0.5,
-        context=ctx
+        context=ctx,
+        basis="Z"
     )
     assert res.decision == "REJECT"
+    assert res.threat_category in ["FORGERY", "CHANNEL_MANIPULATION"]

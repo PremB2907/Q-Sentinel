@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "num_trials_per_state": 50,
+    "shots": 5000,
+    "alpha": 0.01,
+    "calibration_timestamp": 1788450215.0
+  },
+  "basis_thresholds": {
+    "Z": {
+      "basis": "Z",
+      "trials_eval": 100,
+      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_threshold": 0.01,
+      "min_fidelity_threshold": 0.98,
+      "mean_deviation": 0.0,
+      "std_deviation": 0.0
+    },
+    "X": {
+      "basis": "X",
+      "trials_eval": 100,
+      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_threshold": 0.01,
+      "min_fidelity_threshold": 0.98,
+      "mean_deviation": 0.0,
+      "std_deviation": 0.0
+    },
+    "Y": {
+      "basis": "Y",
+      "trials_eval": 100,
+      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_threshold": 0.01,
+      "min_fidelity_threshold": 0.98,
+      "mean_deviation": 0.0,
+      "std_deviation": 0.0
+    }
+  }
+}

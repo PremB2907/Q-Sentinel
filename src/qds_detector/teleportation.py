@@ -30,9 +30,27 @@ def build_teleportation_circuit(
     
     qc = QuantumCircuit(qspec, c_bell, c_target, name=f"Teleportation({input_state_name})")
     
-    # 1. Initialize input state on qubit 0
-    sv = get_statevector(input_state_name)
-    qc.initialize(sv, 0)
+    # 1. Explicit unitary state preparation on test qubit 0
+    state_norm = STATE_ALIASES.get(input_state_name, input_state_name)
+    if state_norm == "|0>":
+        pass  # Qubit defaults to |0>
+    elif state_norm == "|1>":
+        qc.x(0)
+    elif state_norm == "|+>":
+        qc.h(0)
+    elif state_norm == "|->":
+        qc.x(0)
+        qc.h(0)
+    elif state_norm == "|+i>":
+        qc.h(0)
+        qc.s(0)
+    elif state_norm == "|-i>":
+        qc.x(0)
+        qc.h(0)
+        qc.s(0)
+    else:
+        sv = get_statevector(state_norm)
+        qc.initialize(sv, 0)
     qc.barrier()
     
     # 2. Prepare Bell pair |Phi+> on qubits 1 and 2

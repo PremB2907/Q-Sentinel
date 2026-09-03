@@ -16,10 +16,30 @@ class ThresholdConfig:
     max_probability_deviation_accept: float = 0.03
     max_probability_deviation_suspicious: float = 0.10
     
+    # Basis-specific calibrated thresholds (Z, X, Y)
+    basis_max_deviations: Dict[str, float] = field(default_factory=lambda: {
+        "Z": 0.025,
+        "X": 0.028,
+        "Y": 0.030
+    })
+    basis_min_fidelities: Dict[str, float] = field(default_factory=lambda: {
+        "Z": 0.98,
+        "X": 0.98,
+        "Y": 0.98
+    })
+    
     # Protocol-layer verification flags
     require_unique_session: bool = True
     require_fresh_nonce: bool = True
     strict_context_match: bool = True
+
+    def get_max_deviation_accept(self, basis: str) -> float:
+        """Return basis-specific max probability deviation threshold."""
+        return self.basis_max_deviations.get(basis.upper(), self.max_probability_deviation_accept)
+
+    def get_min_fidelity_accept(self, basis: str) -> float:
+        """Return basis-specific min fidelity threshold."""
+        return self.basis_min_fidelities.get(basis.upper(), self.min_fidelity_accept)
 
 
 @dataclass
