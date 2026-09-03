@@ -129,10 +129,9 @@ Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observ
 
 ## Slide 8: Experimental Security Benchmark Results
 
-### Benchmark Composition Breakdown
-> **Total Experiments Evaluated**: **`1,410`**  
-> - **Clean Legitimate Experiments**: `30` (10 per basis across $Z, X, Y$)  
-> - **Attack Experiments**: `1,380` (across Forgery, Depolarizing, Bit-Flip, Phase-Flip, Replay, Impersonation)
+### Benchmark Composition & Severity Scope
+> **Composition**: **`1,410 Total Experiments`** (`30 Clean` + `1,380 Attack`)  
+> **Severity Scope Note**: *Aggregate benchmark across evaluated severity levels ($\lambda \in [0.0, 1.0]$); Slide 7 shows basis-wise observability at $\lambda = 0.35$.*
 
 ### Summary Performance Table
 | Scenario Category | Attack Type | Evaluated Experiments | Detection Rate (TPR) | False Accept Rate (FAR) | False Reject Rate (FRR) |
@@ -145,8 +144,8 @@ Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observ
 | **Quantum Layer** | **Bit-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
 | **Quantum Layer** | **Phase-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
 
-### Verified Security Summary
-> *"Q-Sentinel achieved zero false rejects on legitimate traffic (FPR = 0%, FRR = 0%) and 100% protocol-layer detection for the evaluated replay and impersonation scenarios. In quantum-layer experiments, Q-Sentinel detects the modeled attack classes within the evaluated threat model, achieving 100% detection for state forgery and depolarizing attacks at severities $\lambda \ge 0.05$."*
+### 🎙️ Terminology Precision
+> *"No legitimate run was falsely rejected in the evaluated baseline, giving FRR = 0%. Attack false-acceptance varies by attack class because some Pauli errors are physically unobservable in their commuting basis."*
 
 ---
 
@@ -159,14 +158,18 @@ Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observ
 
 ---
 
-## Slide 10: Conclusion & Engineering Roadmap
+## Slide 10: Conclusion & Judge Defense Q&A Cheatsheet
 
 ### Key Takeaways
 1. **SIH26141 Compliant**: Fully rule-based quantum statistical threat detector without AI/ML algorithms.
 2. **Two-Tier Architecture**: Clean separation between protocol context verification and quantum measurement statistics.
 3. **Scientifically Defensible**: Derived empirical basis thresholds and validated commuting Pauli matrix behavior.
 
-### Repository & Code Standard
-- **GitHub Repository**: [https://github.com/PremB2907/Q-Sentinel](https://github.com/PremB2907/Q-Sentinel)
-- **Experimental Tag**: `v0.4.0-experimental`
-- **Test Suite**: 25/25 Pytest unit tests passing cleanly.
+### 🧠 Killer Q&A Defense Script (Memorize These)
+
+> **Judge**: *"Why didn't you detect 100% of bit-flip attacks?"*  
+> **Presenter**: *"Because that would actually contradict the physics of the measurement basis. An X error commutes with the X observable, so an X-basis eigenstate remains invariant. Our experiment reproduces that expected blind spot, while Z and Y measurements expose the disturbance. That's why we report 66.7% aggregate single-basis observability rather than artificially claiming 100%."*
+
+> **Judge**: *"Is this prototype quantum-secure?"*  
+> **Presenter**: *"Q-Sentinel detects the modeled attack classes within the evaluated threat model. Unforgeability stems from the multi-basis state distribution and protocol context, which we have experimentally verified in simulation."*
+
