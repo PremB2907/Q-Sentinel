@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qds-detector"
+version = "0.1.0"
+description = "Quantum-Inspired QDS Threat Detection Framework for Digital Signature Security (SIH26141)"
+readme = "README.md"
+authors = [
+    { name = "Egreen Quanta Team" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "qiskit>=2.0.0",
+    "qiskit-aer>=0.16.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.7.0",
+    "plotly>=5.14.0",
+    "streamlit>=1.25.0",
+    "pytest>=7.3.0",
+    "pandas>=2.0.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
