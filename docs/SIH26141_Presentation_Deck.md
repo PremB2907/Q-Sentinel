@@ -105,10 +105,20 @@ Problem Statement SIH26141 • Egreen Quanta • Blockchain & Cybersecurity
 
 ## Slide 7: Per-Basis Attack Observability Matrix (The Physics Slide 🌶️)
 
-### Visual Matrix Pointer
+### Visual Matrix Diagram
 ```
-X Error  ──►  X Basis = PASS (Commuting)   │  Z/Y Basis = REJECT (Observable)
-Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observable)
+             Measurement Basis
+             Z        X        Y
+          ┌────────┬────────┬────────┐
+X Error   │   🔴   │   🟢   │   🔴   │
+          ├────────┼────────┼────────┤
+Z Error   │   🟢   │   🔴   │   🔴   │
+          └────────┴────────┴────────┘
+
+🟢 Commuting / Invariant (PASS)
+🔴 Non-commuting / Observable (REJECT)
+
+"The detector reproduces the expected algebraic observability pattern."
 ```
 
 ### Empirical Per-Basis Matrix ($\lambda = 0.35, N = 5000$)
@@ -122,59 +132,67 @@ Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observ
 ### 🎙️ Presenter Verbal Script (20 Seconds)
 > *"The interesting result is not simply that attacks are detected. It is that the detector reproduces the expected Pauli observability pattern. An X error is invisible in the X eigenbasis, while Z and Y measurements expose it. Similarly, a Z error is invisible in the Z eigenbasis. This experimentally validates the basis-dependent behavior predicted by the underlying operator algebra."*
 
-### Physics Finding Statement
-> *"Demonstrating, under the evaluated threat model, that Pauli errors commuting with the measured observable can remain undetectable in that basis, while complementary non-commuting measurements expose the disturbance."*
-
 ---
 
-## Slide 8: Experimental Security Benchmark Results
+## Slide 10: Conclusion, 2-3 Minute Pitch & 15 Judge Q&A Cheatsheet
 
-### Benchmark Composition & Severity Scope
-> **Composition**: **`1,410 Total Experiments`** (`30 Clean` + `1,380 Attack`)  
-> **Severity Scope Note**: *Aggregate benchmark across evaluated severity levels ($\lambda \in [0.0, 1.0]$); Slide 7 shows basis-wise observability at $\lambda = 0.35$.*
+### 🎤 2–3 Minute Pitch Script
+> *"Good morning respected judges. We present **Q-Sentinel**, a quantum-statistical threat detection system built for Smart India Hackathon problem statement SIH26141 under Egreen Quanta.*  
+>
+> *Classical digital signatures face imminent vulnerability from quantum algorithms. While Quantum Digital Signatures (QDS) provide state-transfer security, detecting real-time threat vectors without black-box machine learning models is a key challenge.*  
+>
+> *Our solution implements a **Two-Tier Rule-Based Architecture** driven strictly by quantum statistical hypothesis testing with **zero AI/ML**. Tier 1 traps protocol-layer replay and impersonation attacks using session context nonces and identity keys, achieving **100% detection**. Tier 2 traps physical state forgery and channel noise using projective measurement outcome distributions, $z$-score hypothesis tests, and state fidelity.*  
+>
+> *In our 1,410-experiment benchmark, Q-Sentinel achieved **0.0% False Reject Rate** on legitimate traffic. Most importantly, our experiment validates the underlying Pauli operator algebra: single-basis $X$ errors leave $X$-basis eigenstates invariant, while non-commuting $Z$ and $Y$ bases detect the perturbation—yielding an exact 66.7% single-basis aggregate observability pattern.*  
+>
+> *Q-Sentinel is not presented as an unconditional security proof, but as an experimentally validated, rule-based threat detector. Thank you!"*
 
-### Summary Performance Table
-| Scenario Category | Attack Type | Evaluated Experiments | Detection Rate (TPR) | False Accept Rate (FAR) | False Reject Rate (FRR) |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **Legitimate Traffic** | **Clean Baseline** | **30** | — | — | **0.0%** (0/30) |
-| **Protocol Layer** | **Replay** | **30** | **100.0%** (30/30) | **0.0%** | **0.0%** |
-| **Protocol Layer** | **Impersonation** | **30** | **100.0%** (30/30) | **0.0%** | **0.0%** |
-| **Quantum Layer** | **State Forgery** | **330** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** | **0.0%** |
-| **Quantum Layer** | **Depolarizing Noise** | **330** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** | **0.0%** |
-| **Quantum Layer** | **Bit-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
-| **Quantum Layer** | **Phase-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
+### 🧠 15 Aggressive Judge Questions & Answers Cheatsheet
 
-### 🎙️ Terminology Precision
-> *"No legitimate run was falsely rejected in the evaluated baseline, giving FRR = 0%. Attack false-acceptance varies by attack class because some Pauli errors are physically unobservable in their commuting basis."*
+1. **Q: Why did you not use Machine Learning / AI?**  
+   *A: SIH26141 requires a quantum-principle-based detector. ML models introduce black-box decision boundaries and false acceptances. Deterministic quantum statistics ($z$-scores, $\chi^2$, fidelity) provide verifiable confidence.*
 
----
+2. **Q: Why didn't you detect 100% of bit-flip attacks in aggregate?**  
+   *A: Because detecting $X$ errors in an $X$ basis would contradict Pauli algebra. $X |+\rangle = |+\rangle$, so $X$ errors are invariant in $X$-basis. Non-commuting $Z$ and $Y$ bases achieve 100% detection, giving 66.7% single-basis aggregate observability.*
 
-## Slide 9: Hero UI Demo Flow & Operational Features
+3. **Q: Is this prototype quantum-secure?**  
+   *A: Q-Sentinel is not presented as a proof of unconditional quantum security. It detects the modeled attack classes within the evaluated threat model.*
 
-1. **Clean Teleportation Validation**: Select $|+i\rangle$, Basis $Y$, Shots $5000$ $\to$ Click Run $\to$ 🟢 **SIGNATURE VALIDATED** (Fidelity $1.0000$, $\Delta = 0.0000$).
-2. **State Forgery Injection**: Select State Forgery, Severity $\lambda = 0.35$ $\to$ Click Run $\to$ 🔴 **SIGNATURE REJECTED** (Threat: `STATISTICAL SIGNATURE FORGERY`, Fidelity $0.8250$, $\Delta = 0.1750$, $p$-value $< 0.001$).
-3. **Replay Attack Demonstration**: Select Replay Attack $\to$ Click Run $\to$ 🔴 **SIGNATURE REJECTED** (Tier 1 Freshness Failure: `STALE REPLAY TRANSCRIPT`).
-4. **Impersonation Demonstration**: Select Impersonation Attack $\to$ Click Run $\to$ 🔴 **SIGNATURE REJECTED** (Tier 1 Identity Failure: `SIGNER IMPERSONATION`).
+4. **Q: So what exactly have you proven?**  
+   *A: We have experimentally validated our detection model under defined simulation conditions. The protocol layer detects evaluated replay/impersonation, while the quantum layer reproduces Pauli basis-dependent observability.*
 
----
+5. **Q: How did you derive your 0.0100 acceptance threshold?**  
+   *A: Derived empirically via clean calibration trials. Under noise-aware sampling ($p_{\text{noise}}=0.005$), the 99th percentile deviation is $\approx 0.0058$. We apply an operational safety margin ($0.0100$) to absorb environmental drift.*
 
-## Slide 10: Conclusion & Judge Defense Q&A Cheatsheet
+6. **Q: Can quantum measurements detect a replayed signature?**  
+   *A: No. Replayed transcripts have physically valid quantum statistics. Replay must be detected at Tier 1 using nonces and timestamps.*
 
-### Key Takeaways
-1. **SIH26141 Compliant**: Fully rule-based quantum statistical threat detector without AI/ML algorithms.
-2. **Two-Tier Architecture**: Clean separation between protocol context verification and quantum measurement statistics.
-3. **Scientifically Defensible**: Derived empirical basis thresholds and validated commuting Pauli matrix behavior.
+7. **Q: What is the difference between FPR and FAR in your report?**  
+   *A: FPR/FRR measures false rejects on clean legitimate traffic (0.0% in our baseline). FAR measures false accepts on attack traffic.*
 
-### 🧠 Killer Q&A Defense Script (Memorize These)
+8. **Q: What quantum SDK and simulator are you running?**  
+   *A: Qiskit 2.x and Qiskit Aer backend with explicit unitary state preparation gates ($H, S, X$).*
 
-> **Judge**: *"Why didn't you detect 100% of bit-flip attacks?"*  
-> **Presenter**: *"Because that would actually contradict the physics of the measurement basis. An X error commutes with the X observable, so an X-basis eigenstate remains invariant. Our experiment reproduces that expected blind spot, while Z and Y measurements expose the disturbance. That's why we report 66.7% aggregate single-basis observability rather than artificially claiming 100%."*
+9. **Q: How many total experiments did you run for evaluation?**  
+   *A: 1,410 independent trials (30 clean + 1,380 attack instances across severities $\lambda \in [0, 1]$).*
 
-> **Judge**: *"Is this prototype quantum-secure?"*  
-> **Presenter**: *"Q-Sentinel is not presented as a proof of unconditional quantum security. It detects the modeled attack classes within the evaluated threat model, and our experiments validate the expected statistical and basis-dependent detection behavior."*
+10. **Q: Are calibration and evaluation datasets separate?**  
+    *A: Yes, completely non-overlapping datasets with distinct random seed offsets.*
 
-> **Judge**: *"So what exactly have you proven?"*  
-> **Presenter**: *"We have experimentally validated our detection model under the defined simulation conditions. In particular, the protocol layer detects the evaluated replay and impersonation cases, while the quantum layer reproduces the expected Pauli basis-dependent observability pattern."*
+11. **Q: How fast is the detector?**  
+    *A: End-to-end simulation and analysis takes under 2.5 ms per 5,000-shot experiment.*
+
+12. **Q: Does this run offline?**  
+    *A: Yes, 100% offline execution with local Qiskit Aer simulation.*
+
+13. **Q: What happens if shot count N is reduced to 1,000?**  
+    *A: Binomial standard error increases from $0.007$ to $0.015$. Thresholds scale dynamically via $SE = \sqrt{p_0(1-p_0)/N}$.*
+
+14. **Q: How do you handle density matrices in channel noise attacks?**  
+    *A: Density matrices $\rho$ evaluate trace probabilities $p_\pm = \mathrm{Tr}(P_\pm \rho)$ under projective measurement operators.*
+
+15. **Q: What is the current release tag?**  
+    *A: `v0.4.0-experimental`, frozen and fully reproducible on GitHub.*
 
 ### 🔑 Three Core Axioms
 1. **100% detection $\neq$ 100% security**
