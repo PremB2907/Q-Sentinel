@@ -4,7 +4,7 @@ Multi-Trial Evaluation Benchmark Suite for QDS Threat Detector.
 Evaluates performance across:
 Attack x Severity x Basis x Shots x Trials
 
-Computes TPR, FPR, FAR, FRR, FNR, state fidelity, and execution latency.
+Computes Quantum Layer Metrics (Forgery, Channel Noise) and Protocol Layer Metrics (Replay, Impersonation).
 Outputs reproducible benchmark JSON to experiments/results/benchmark_results.json.
 """
 
@@ -16,7 +16,7 @@ import numpy as np
 
 from qds_detector.config import ExperimentConfig, ThresholdConfig, SessionContext
 from qds_detector.protocol import run_qds_experiment
-from qds_detector.metrics import compute_batch_metrics
+from qds_detector.metrics import compute_batch_metrics, is_ground_truth_attack
 
 
 RESULTS_DIR = Path("experiments/results")
@@ -28,8 +28,8 @@ def run_benchmark_suite(
     severities: List[float] | None = None
 ) -> Dict[str, Any]:
     """
-    Execute multi-trial evaluation benchmark suite.
-    Ensures non-overlapping dataset from calibration runs.
+    Execute multi-trial evaluation benchmark suite with corrected ground truth labeling
+    and separated Quantum Layer vs Protocol Layer reporting.
     """
     if severities is None:
         severities = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -53,6 +53,10 @@ def run_benchmark_suite(
     
     all_experiment_results = []
     summary_by_attack = {}
+    
+    quantum_layer_records = []
+    protocol_layer_records = []
+    clean_records = []
     
     start_bench_time = time.perf_counter()
     
@@ -80,11 +84,21 @@ def run_benchmark_suite(
                     attack_records.append(record)
                     all_experiment_results.append(record)
                     
+                    if attack == "none":
+                        clean_records.append(record)
+                    elif attack in ["replay", "impersonation"]:
+                        protocol_layer_records.append(record)
+                    else:
+                        quantum_layer_records.append(record)
+                    
         batch_m = compute_batch_metrics(attack_records)
         summary_by_attack[attack] = batch_m.to_dict()
 
     total_bench_time = time.perf_counter() - start_bench_time
+    
     overall_m = compute_batch_metrics(all_experiment_results)
+    quantum_m = compute_batch_metrics(clean_records + quantum_layer_records)
+    protocol_m = compute_batch_metrics(clean_records + protocol_layer_records)
     
     benchmark_export = {
         "metadata": {
@@ -94,6 +108,8 @@ def run_benchmark_suite(
             "benchmark_execution_time_seconds": round(total_bench_time, 2)
         },
         "overall_metrics": overall_m.to_dict(),
+        "quantum_layer_metrics": quantum_m.to_dict(),
+        "protocol_layer_metrics": protocol_m.to_dict(),
         "summary_by_attack_scenario": summary_by_attack
     }
     
@@ -106,7 +122,8 @@ def run_benchmark_suite(
 
 
 if __name__ == "__main__":
-    print("Executing QDS Threat Detector Multi-Trial Benchmark Suite...")
+    print("Executing Corrected QDS Threat Detector Multi-Trial Benchmark Suite...")
     res = run_benchmark_suite(num_trials=10, shots=5000)
     print(f"Benchmark complete! Total experiments evaluated: {res['metadata']['total_experiments_evaluated']}")
     print(f"Overall Accuracy: {res['overall_metrics']['accuracy']*100:.2f}% | False Accept Rate (FAR): {res['overall_metrics']['far']*100:.2f}% | False Reject Rate (FRR): {res['overall_metrics']['frr']*100:.2f}%")
+    print(f"Protocol Layer Detection Rate: {res['protocol_layer_metrics']['tpr']*100:.2f}%")

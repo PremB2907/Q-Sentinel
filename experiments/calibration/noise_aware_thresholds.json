@@ -3,36 +3,36 @@
     "num_trials_per_state": 50,
     "shots": 5000,
     "alpha": 0.01,
-    "p_noise_channel": 0.0,
-    "calibration_mode": "Ideal-Channel"
+    "p_noise_channel": 0.005,
+    "calibration_mode": "Noise-Aware"
   },
   "basis_thresholds": {
     "Z": {
       "basis": "Z",
       "trials_eval": 100,
-      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_99th": 0.0056020000000000505,
       "max_probability_deviation_threshold": 0.01,
       "min_fidelity_threshold": 0.98,
-      "mean_deviation": 0.0,
-      "std_deviation": 0.0
+      "mean_deviation": 0.0032480000000000165,
+      "std_deviation": 0.0007869536199802371
     },
     "X": {
       "basis": "X",
       "trials_eval": 100,
-      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_99th": 0.00501200000000001,
       "max_probability_deviation_threshold": 0.01,
       "min_fidelity_threshold": 0.98,
-      "mean_deviation": 0.0,
-      "std_deviation": 0.0
+      "mean_deviation": 0.003202000000000016,
+      "std_deviation": 0.000777429096445458
     },
     "Y": {
       "basis": "Y",
       "trials_eval": 100,
-      "max_probability_deviation_99th": 0.0,
+      "max_probability_deviation_99th": 0.005810000000000032,
       "max_probability_deviation_threshold": 0.01,
       "min_fidelity_threshold": 0.98,
-      "mean_deviation": 0.0,
-      "std_deviation": 0.0
+      "mean_deviation": 0.0034580000000000166,
+      "std_deviation": 0.0009305030897315736
     }
   }
 }

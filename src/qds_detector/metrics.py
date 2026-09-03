@@ -2,12 +2,9 @@
 Evaluation Metrics & Performance Analysis for QDS Security Detector.
 
 Computes:
-- True Positive Rate (TPR)
-- False Positive Rate (FPR)
-- False Accept Rate (FAR)
-- False Reject Rate (FRR)
-- Overall Accuracy
-- Latency & Shot Efficiency
+- Quantum Layer Metrics (Forgery, Channel Noise: TPR, FPR, FAR, FRR, FNR, Accuracy)
+- Protocol Layer Metrics (Replay, Impersonation Detection Rates)
+- Overall Combined Security Metrics
 """
 
 from dataclasses import dataclass
@@ -49,6 +46,11 @@ class EvaluationMetrics:
         return float(self.false_positives / self.clean_runs) if self.clean_runs > 0 else 0.0
 
     @property
+    def fnr(self) -> float:
+        """False Negative Rate."""
+        return float(self.false_negatives / (self.true_positives + self.false_negatives)) if (self.true_positives + self.false_negatives) > 0 else 0.0
+
+    @property
     def accuracy(self) -> float:
         """Overall detection accuracy."""
         total = self.total_experiments
@@ -68,8 +70,18 @@ class EvaluationMetrics:
             "fpr": self.fpr,
             "far": self.far,
             "frr": self.frr,
+            "fnr": self.fnr,
             "accuracy": self.accuracy,
         }
+
+
+def is_ground_truth_attack(r: Dict[str, Any]) -> bool:
+    """Determine ground truth attack status from experiment record dictionary."""
+    atk_type = r.get("attack", r.get("attack_type", "none"))
+    if atk_type in ["forgery", "channel_bit_flip", "channel_phase_flip", "channel_depolarizing", "replay", "impersonation"]:
+        return True
+    sev = r.get("attack_severity", 0.0)
+    return bool(sev > 0.0)
 
 
 def compute_batch_metrics(results: List[Dict[str, Any]]) -> EvaluationMetrics:
@@ -78,7 +90,7 @@ def compute_batch_metrics(results: List[Dict[str, Any]]) -> EvaluationMetrics:
     eval_m.total_experiments = len(results)
     
     for r in results:
-        is_attack = (r.get("attack_type", "none") != "none") or (r.get("attack_severity", 0.0) > 0.0)
+        is_attack = is_ground_truth_attack(r)
         decision = r.get("decision", "ACCEPT")
         
         if is_attack:
