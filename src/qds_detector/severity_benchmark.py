@@ -72,11 +72,34 @@ def run_severity_sweep_benchmark(
                         detected_count += 1
                         
             det_rate = (detected_count / total_trials) * 100.0
+            
+            # Basis breakdown
+            basis_breakdown = {}
+            for b in bases:
+                b_trials = 0
+                b_detected = 0
+                for trial in range(trials_per_step):
+                    seed = 5000 + trial * 41 + int(sev * 100) + hash(b) % 97
+                    cfg = ExperimentConfig(
+                        input_state=state_basis_map[b],
+                        measurement_basis=b,
+                        shots=shots,
+                        seed=seed,
+                        attack_type=attack,
+                        attack_severity=float(sev)
+                    )
+                    rec = run_qds_experiment(cfg)
+                    b_trials += 1
+                    if rec["decision"] in ["REJECT", "SUSPICIOUS"]:
+                        b_detected += 1
+                basis_breakdown[b] = round((b_detected / b_trials) * 100.0, 1)
+
             attack_curve.append({
                 "severity": float(sev),
                 "trials": total_trials,
                 "detection_rate_pct": round(det_rate, 2),
                 "false_accept_rate_pct": round(100.0 - det_rate, 2),
+                "basis_detection_rate_pct": basis_breakdown,
                 "mean_fidelity": round(float(np.mean(fidelities)), 4),
                 "mean_deviation": round(float(np.mean(deviations)), 4)
             })
