@@ -105,6 +105,12 @@ Problem Statement SIH26141 • Egreen Quanta • Blockchain & Cybersecurity
 
 ## Slide 7: Per-Basis Attack Observability Matrix (The Physics Slide 🌶️)
 
+### Visual Matrix Pointer
+```
+X Error  ──►  X Basis = PASS (Commuting)   │  Z/Y Basis = REJECT (Observable)
+Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observable)
+```
+
 ### Empirical Per-Basis Matrix ($\lambda = 0.35, N = 5000$)
 | Attack Vector | Z-Basis | X-Basis | Y-Basis | Aggregate Detection | Commuting Algebra Rationale |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -113,6 +119,9 @@ Problem Statement SIH26141 • Egreen Quanta • Blockchain & Cybersecurity
 | **Bit-Flip Noise ($X$)** | **100% (REJECT)** | **0% (PASS)** | **100% (REJECT)** | **66.7%** | $X|+\rangle = |+\rangle$. In $X$-basis, bit-flip leaves eigenstate invariant. |
 | **Phase-Flip Noise ($Z$)** | **0% (PASS)** | **100% (REJECT)** | **100% (REJECT)** | **66.7%** | $Z|0\rangle = |0\rangle$. In $Z$-basis, phase-flip leaves eigenstate invariant. |
 
+### 🎙️ Presenter Verbal Script (20 Seconds)
+> *"The interesting result is not simply that attacks are detected. It is that the detector reproduces the expected Pauli observability pattern. An X error is invisible in the X eigenbasis, while Z and Y measurements expose it. Similarly, a Z error is invisible in the Z eigenbasis. This experimentally validates the basis-dependent behavior predicted by the underlying operator algebra."*
+
 ### Physics Finding Statement
 > *"Demonstrating, under the evaluated threat model, that Pauli errors commuting with the measured observable can remain undetectable in that basis, while complementary non-commuting measurements expose the disturbance."*
 
@@ -120,16 +129,21 @@ Problem Statement SIH26141 • Egreen Quanta • Blockchain & Cybersecurity
 
 ## Slide 8: Experimental Security Benchmark Results
 
-### Summary Table (1,410 Independent Trials)
-| Scenario Category | Attack Type | Detection Rate (TPR) | False Accept Rate (FAR) | False Reject Rate (FRR) |
-| :--- | :--- | :---: | :---: | :---: |
-| **Legitimate Traffic** | **Clean Baseline** | — | — | **0.0%** |
-| **Protocol Layer** | **Replay** | **100.0%** | **0.0%** | **0.0%** |
-| **Protocol Layer** | **Impersonation** | **100.0%** | **0.0%** | **0.0%** |
-| **Quantum Layer** | **State Forgery** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** (0.0% for $\lambda \ge 0.05$) | **0.0%** |
-| **Quantum Layer** | **Depolarizing Noise** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** (0.0% for $\lambda \ge 0.05$) | **0.0%** |
-| **Quantum Layer** | **Bit-Flip Noise** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
-| **Quantum Layer** | **Phase-Flip Noise** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
+### Benchmark Composition Breakdown
+> **Total Experiments Evaluated**: **`1,410`**  
+> - **Clean Legitimate Experiments**: `30` (10 per basis across $Z, X, Y$)  
+> - **Attack Experiments**: `1,380` (across Forgery, Depolarizing, Bit-Flip, Phase-Flip, Replay, Impersonation)
+
+### Summary Performance Table
+| Scenario Category | Attack Type | Evaluated Experiments | Detection Rate (TPR) | False Accept Rate (FAR) | False Reject Rate (FRR) |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Legitimate Traffic** | **Clean Baseline** | **30** | — | — | **0.0%** (0/30) |
+| **Protocol Layer** | **Replay** | **30** | **100.0%** (30/30) | **0.0%** | **0.0%** |
+| **Protocol Layer** | **Impersonation** | **30** | **100.0%** (30/30) | **0.0%** | **0.0%** |
+| **Quantum Layer** | **State Forgery** | **330** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** | **0.0%** |
+| **Quantum Layer** | **Depolarizing Noise** | **330** | **90.9%** (100% for $\lambda \ge 0.05$) | **9.1%** | **0.0%** |
+| **Quantum Layer** | **Bit-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
+| **Quantum Layer** | **Phase-Flip Noise** | **330** | **60.6%** (66.7% per-basis) | **39.4%** | **0.0%** |
 
 ### Verified Security Summary
 > *"Q-Sentinel achieved zero false rejects on legitimate traffic (FPR = 0%, FRR = 0%) and 100% protocol-layer detection for the evaluated replay and impersonation scenarios. In quantum-layer experiments, Q-Sentinel detects the modeled attack classes within the evaluated threat model, achieving 100% detection for state forgery and depolarizing attacks at severities $\lambda \ge 0.05$."*
