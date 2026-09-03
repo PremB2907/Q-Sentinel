@@ -171,5 +171,13 @@ Z Error  ──►  Z Basis = PASS (Commuting)   │  X/Y Basis = REJECT (Observ
 > **Presenter**: *"Because that would actually contradict the physics of the measurement basis. An X error commutes with the X observable, so an X-basis eigenstate remains invariant. Our experiment reproduces that expected blind spot, while Z and Y measurements expose the disturbance. That's why we report 66.7% aggregate single-basis observability rather than artificially claiming 100%."*
 
 > **Judge**: *"Is this prototype quantum-secure?"*  
-> **Presenter**: *"Q-Sentinel detects the modeled attack classes within the evaluated threat model. Unforgeability stems from the multi-basis state distribution and protocol context, which we have experimentally verified in simulation."*
+> **Presenter**: *"Q-Sentinel is not presented as a proof of unconditional quantum security. It detects the modeled attack classes within the evaluated threat model, and our experiments validate the expected statistical and basis-dependent detection behavior."*
+
+> **Judge**: *"So what exactly have you proven?"*  
+> **Presenter**: *"We have experimentally validated our detection model under the defined simulation conditions. In particular, the protocol layer detects the evaluated replay and impersonation cases, while the quantum layer reproduces the expected Pauli basis-dependent observability pattern."*
+
+### 🔑 Three Core Axioms
+1. **100% detection $\neq$ 100% security**
+2. **0% FRR $\neq$ zero false positives in every possible environment**
+3. **66.7% observability $\neq$ detector failure**
 
