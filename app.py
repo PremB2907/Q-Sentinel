@@ -184,8 +184,8 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
 
         ctx = SessionContext(
             nonce="valid_nonce_1001" if attack_type != "Replay Attack" else "expired_nonce_999",
-            expected_identity="Alice" if attack_type != "Impersonation Attack" else "Eve_Mallory",
-            actual_identity="Alice"
+            signer_id="Alice_PubKey_0x8F4A" if attack_type != "Impersonation Attack" else "Eve_Mallory",
+            expected_signer_id="Alice_PubKey_0x8F4A"
         )
         
         config = ExperimentConfig(
@@ -420,5 +420,6 @@ elif lab_choice == "📊 Unified Quantum Risk Assessment":
         st.markdown(f"**Mosca Threshold Formula:** `{risk_res['mosca_theorem_analysis']['formula_status']}`")
 
         if risk_res["resource_estimates"]["logical_qubits_required"] > 0:
-            st.info(f"<b>Estimated CRQC Logical Qubits:</b> {risk_res['resource_estimates']['logical_qubits_required']:,} | "
-                    f"<b>Physical Surface Code Qubits:</b> {risk_res['resource_estimates']['physical_qubits_required']:,}", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: rgba(56, 139, 253, 0.15); border-left: 4px solid #58a6ff; padding: 12px; border-radius: 4px;'>"
+                        f"<b>Estimated CRQC Logical Qubits:</b> {risk_res['resource_estimates']['logical_qubits_required']:,} | "
+                        f"<b>Physical Surface Code Qubits:</b> {risk_res['resource_estimates']['physical_qubits_required']:,}</div>", unsafe_allow_html=True)
