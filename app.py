@@ -189,8 +189,8 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
         )
         
         config = ExperimentConfig(
-            state_label=state_label,
-            basis=basis_choice,
+            input_state=state_label,
+            measurement_basis=basis_choice,
             shots=shots,
             attack_type=exp_attack_type,
             attack_severity=severity_lambda
