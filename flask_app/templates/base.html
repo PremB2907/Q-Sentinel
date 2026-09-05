@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Q-Sentinel | Quantum Threat Lab{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/neo_brutalism.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/quantum_canvas.js') }}"></script>
+</head>
+<body>
+    <canvas id="quantum-canvas"></canvas>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="brand-badge">🛡️ Q-SENTINEL</div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">🛡️ QDS Threat Lab</a></li>
+            <li><a href="/classical-threats" class="nav-link {% if request.path == '/classical-threats' %}active{% endif %}">⚡ Classical Threats</a></li>
+            <li><a href="/shor" class="nav-link {% if request.path == '/shor' %}active{% endif %}">🔢 Shor Factorizer</a></li>
+            <li><a href="/grover" class="nav-link {% if request.path == '/grover' %}active{% endif %}">🔍 Grover Search</a></li>
+            <li><a href="/pqc" class="nav-link {% if request.path == '/pqc' %}active{% endif %}">📜 PQC Comparison</a></li>
+            <li><a href="/risk" class="nav-link {% if request.path == '/risk' %}active{% endif %}">📊 Risk Assessment</a></li>
+        </ul>
+        <div class="rule-badge">⚡ STRICT RULE ENGINE • NO AI/ML</div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

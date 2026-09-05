@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}QDS Teleportation Threat Lab | Q-Sentinel{% endblock %}
+
+{% block content %}
+<div class="page-title">🛡️ QDS Teleportation Security Laboratory</div>
+
+<div class="notice-banner">
+    <b>SIH26141 Primary Module:</b> Continuous physical verification of 3-qubit teleported Bell states 
+    (|Φ⁺⟩ = (|00⟩ + |11⟩)/√2) across 6 Pauli eigenstates using deterministic statistical rules (z-score, Chi-Square).
+</div>
+
+<div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+    <!-- Controls Column -->
+    <div class="neo-card neo-card-yellow">
+        <h3 style="margin-bottom: 16px; text-transform: uppercase;">⚙️ Controls</h3>
+        
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Pauli Eigenstate (|ψ⟩):</label>
+        <select id="state_label" class="neo-select">
+            {% for st_name in pauli_states %}
+            <option value="{{ st_name }}">{{ st_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Measurement Basis:</label>
+        <select id="basis_choice" class="neo-select">
+            <option value="Z" selected>Z Basis</option>
+            <option value="X">X Basis</option>
+            <option value="Y">Y Basis</option>
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Shots: <span id="shots_val">1000</span></label>
+        <input type="range" id="shots_slider" min="100" max="5000" step="100" value="1000" style="width: 100%; margin-bottom: 16px;">
+
+        <hr style="border: 1px solid #000000; margin: 16px 0;">
+
+        <h4 style="margin-bottom: 12px; text-transform: uppercase; color: var(--neon-pink);">🔥 Threat Vector</h4>
+        <select id="attack_type" class="neo-select">
+            <option value="clean" selected>Clean (Legitimate)</option>
+            <option value="state_forgery">State Forgery</option>
+            <option value="bit_flip">Bit-Flip Noise</option>
+            <option value="phase_flip">Phase-Flip Noise</option>
+            <option value="depolarizing">Depolarizing Noise</option>
+            <option value="replay">Replay Attack</option>
+            <option value="impersonation">Impersonation Attack</option>
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Attack Severity (λ): <span id="severity_val">0.35</span></label>
+        <input type="range" id="severity_slider" min="0.0" max="1.0" step="0.05" value="0.35" style="width: 100%; margin-bottom: 24px;">
+
+        <button id="run_btn" class="neo-btn" style="width: 100%;">🚀 RUN EXPERIMENT</button>
+    </div>
+
+    <!-- Output Display Column -->
+    <div>
+        <!-- Hero Callout Container -->
+        <div id="decision_container" class="decision-badge-accept" style="margin-bottom: 24px;">
+            ✅ DECISION: INITIALIZING
+        </div>
+
+        <!-- Chart.js Graph Card -->
+        <div class="neo-card neo-card-pink">
+            <h3 style="margin-bottom: 16px; text-transform: uppercase;">📊 Teleportation Probability Distribution</h3>
+            <div style="height: 320px;">
+                <canvas id="qdsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let qdsChart = null;
+
+    document.getElementById('shots_slider').addEventListener('input', (e) => {
+        document.getElementById('shots_val').innerText = e.target.value;
+    });
+
+    document.getElementById('severity_slider').addEventListener('input', (e) => {
+        document.getElementById('severity_val').innerText = e.target.value;
+    });
+
+    async function executeQDS() {
+        const payload = {
+            state_label: document.getElementById('state_label').value,
+            basis: document.getElementById('basis_choice').value,
+            shots: parseInt(document.getElementById('shots_slider').value),
+            attack_type: document.getElementById('attack_type').value,
+            severity: parseFloat(document.getElementById('severity_slider').value)
+        };
+
+        const res = await fetch('/api/qds/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        
+        // Update Decision Badge
+        const decBox = document.getElementById('decision_container');
+        const decision = data.decision || "ACCEPT";
+        const z = (data.z_score || 0).toFixed(2);
+        const p = (data.p_value || 1).toFixed(4);
+        const fid = (data.fidelity || 1).toFixed(4);
+        const reason = data.reason || "";
+
+        if (decision === 'ACCEPT') {
+            decBox.className = 'decision-badge-accept';
+            decBox.innerHTML = `✅ DECISION: ACCEPT<br><span style='font-size: 14px;'>z-score: ${z} | Chi2 p-val: ${p} | Fidelity: ${fid}</span>`;
+        } else if (decision === 'REJECT') {
+            decBox.className = 'decision-badge-reject';
+            decBox.innerHTML = `❌ DECISION: REJECT<br><span style='font-size: 14px;'>Breach Detected: ${reason}</span>`;
+        } else {
+            decBox.className = 'decision-badge-suspicious';
+            decBox.innerHTML = `⚠️ DECISION: SUSPICIOUS<br><span style='font-size: 14px;'>Statistical Anomaly: ${reason}</span>`;
+        }
+
+        // Update Chart
+        const obs = data.observed_probability || { "0": 0.5, "1": 0.5 };
+        const base = data.baseline_probability || { "0": 0.5, "1": 0.5 };
+
+        const ctxChart = document.getElementById('qdsChart').getContext('2d');
+        
+        if (qdsChart) qdsChart.destroy();
+
+        qdsChart = new Chart(ctxChart, {
+            type: 'bar',
+            data: {
+                labels: ['|0⟩ (+1)', '|1⟩ (-1)'],
+                datasets: [
+                    {
+                        label: 'Measured Probability',
+                        data: [obs["0"] || 0, obs["1"] || 0],
+                        backgroundColor: '#00f0ff',
+                        borderColor: '#000000',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Expected Clean Probability',
+                        data: [base["0"] || 0, base["1"] || 0],
+                        backgroundColor: '#00ff66',
+                        borderColor: '#000000',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 1.0, ticks: { color: '#ffffff' } },
+                    x: { ticks: { color: '#ffffff' } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } }
+                }
+            }
+        });
+    }
+
+    document.getElementById('run_btn').addEventListener('click', executeQDS);
+    executeQDS();
+</script>
+{% endblock %}

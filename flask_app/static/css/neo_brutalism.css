@@ -1,0 +1,260 @@
+/* 
+ * Neo-Brutalism Design System for Q-Sentinel Quantum Security System
+ * High Contrast, Thick Borders, Hard Drop Shadows, Neon Accent Glows
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@500;700;900&display=swap');
+
+:root {
+    --bg-dark: #0a0b10;
+    --card-bg: #12141d;
+    --text-main: #f0f3f8;
+    --border-color: #000000;
+    --border-light: #303644;
+    
+    --neon-cyan: #00f0ff;
+    --neon-pink: #ff0055;
+    --neon-yellow: #ffe600;
+    --neon-green: #00ff66;
+    --neon-purple: #9d00ff;
+
+    --shadow-cyan: 5px 5px 0px var(--neon-cyan);
+    --shadow-pink: 5px 5px 0px var(--neon-pink);
+    --shadow-yellow: 5px 5px 0px var(--neon-yellow);
+    --shadow-green: 5px 5px 0px var(--neon-green);
+    --shadow-hard: 5px 5px 0px #000000;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+}
+
+#quantum-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.25;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 280px;
+    background-color: #0e1017;
+    border-right: 4px solid var(--neon-cyan);
+    padding: 24px 16px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+}
+
+.brand-badge {
+    background-color: var(--neon-cyan);
+    color: #000000;
+    font-weight: 900;
+    padding: 12px;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: 3px solid #000000;
+    box-shadow: var(--shadow-pink);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-link {
+    display: block;
+    padding: 12px 16px;
+    background-color: #1a1d29;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    border: 3px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 0.15s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--neon-cyan);
+    color: #000000;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--neon-pink);
+}
+
+.rule-badge {
+    margin-top: auto;
+    background-color: var(--neon-yellow);
+    color: #000000;
+    padding: 8px 12px;
+    font-weight: 800;
+    font-size: 12px;
+    border: 3px solid #000000;
+    box-shadow: var(--shadow-hard);
+    text-align: center;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 32px 40px;
+    z-index: 1;
+    position: relative;
+    max-width: 1400px;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    display: inline-block;
+    background-color: var(--neon-pink);
+    color: #ffffff;
+    padding: 6px 16px;
+    border: 3px solid #000000;
+    box-shadow: var(--shadow-cyan);
+}
+
+.notice-banner {
+    background-color: #181b26;
+    border: 3px solid var(--neon-cyan);
+    padding: 16px;
+    font-size: 15px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-hard);
+    margin-top: 16px;
+}
+
+/* Neo-Brutalism Cards & Buttons */
+.neo-card {
+    background-color: var(--card-bg);
+    border: 3px solid #000000;
+    box-shadow: var(--shadow-cyan);
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.neo-card-pink { box-shadow: var(--shadow-pink); }
+.neo-card-yellow { box-shadow: var(--shadow-yellow); }
+.neo-card-green { box-shadow: var(--shadow-green); }
+
+.neo-btn {
+    background-color: var(--neon-cyan);
+    color: #000000;
+    font-weight: 900;
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    border: 3px solid #000000;
+    box-shadow: var(--shadow-pink);
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.neo-btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0px var(--neon-pink);
+}
+
+.neo-btn:active {
+    transform: translate(0px, 0px);
+    box-shadow: 2px 2px 0px var(--neon-pink);
+}
+
+.neo-select, .neo-input {
+    width: 100%;
+    background-color: #1a1d28;
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px;
+    border: 3px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    margin-bottom: 16px;
+}
+
+/* Hero Decision Badges */
+.decision-badge-accept {
+    background-color: var(--neon-green);
+    color: #000000;
+    border: 4px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    padding: 20px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 26px;
+}
+
+.decision-badge-reject {
+    background-color: var(--neon-pink);
+    color: #ffffff;
+    border: 4px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    padding: 20px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 26px;
+}
+
+.decision-badge-suspicious {
+    background-color: var(--neon-yellow);
+    color: #000000;
+    border: 4px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    padding: 20px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 26px;
+}
+
+.table-neo {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    border: 3px solid #000000;
+}
+
+.table-neo th {
+    background-color: var(--neon-cyan);
+    color: #000000;
+    font-weight: 900;
+    padding: 12px;
+    text-align: left;
+    border: 2px solid #000000;
+}
+
+.table-neo td {
+    background-color: #12141d;
+    padding: 12px;
+    border: 2px solid #000000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}PQC Comparison Laboratory | Q-Sentinel{% endblock %}
+
+{% block content %}
+<div class="page-title">📜 Post-Quantum Cryptography (PQC) Comparison</div>
+
+<div class="notice-banner">
+    <b>NIST FIPS 204 / 205 Standards:</b> Evaluates ML-DSA (Module-Lattice) and SLH-DSA (Stateless Hash-based) 
+    signature overheads against classical ECDSA P-256 and RSA-2048.
+</div>
+
+<div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+    <div class="neo-card neo-card-yellow">
+        <h3 style="margin-bottom: 16px; text-transform: uppercase;">⚙️ Select Scheme</h3>
+        <select id="pqc_select" class="neo-select">
+            {% for s in schemes %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+        </select>
+
+        <button id="inspect_pqc_btn" class="neo-btn" style="width: 100%;">🔍 INSPECT METADATA</button>
+    </div>
+
+    <div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="neo-card neo-card-cyan" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">PUB KEY SIZE</h4>
+                <h2 id="out_pub" style="font-size: 18px; color: var(--neon-cyan); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-pink" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">SIGNATURE SIZE</h4>
+                <h2 id="out_sig" style="font-size: 18px; color: var(--neon-pink); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-yellow" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">NIST CATEGORY</h4>
+                <h2 id="out_cat" style="font-size: 18px; color: var(--neon-yellow); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-green" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">QUANTUM STATUS</h4>
+                <h2 id="out_status" style="font-size: 16px; color: var(--neon-green); margin-top: 4px;">-</h2>
+            </div>
+        </div>
+
+        <div class="neo-card">
+            <h3 style="margin-bottom: 12px; text-transform: uppercase;">🔬 Classical vs PQC Size Overhead Matrix</h3>
+            <table class="table-neo">
+                <thead>
+                    <tr>
+                        <th>Scheme</th>
+                        <th>Type</th>
+                        <th>Public Key (Bytes)</th>
+                        <th>Signature (Bytes)</th>
+                        <th>Quantum Threat Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>ECDSA-P256</b></td><td>Classical</td><td>64 B</td><td>64 B</td><td><span style="color: var(--neon-pink); font-weight: bold;">VULNERABLE</span></td></tr>
+                    <tr><td><b>RSA-2048</b></td><td>Classical</td><td>256 B</td><td>256 B</td><td><span style="color: var(--neon-pink); font-weight: bold;">VULNERABLE</span></td></tr>
+                    <tr><td><b>ML-DSA-44</b></td><td>PQC Lattice</td><td>1,312 B</td><td>2,420 B</td><td><span style="color: var(--neon-green); font-weight: bold;">QUANTUM RESISTANT</span></td></tr>
+                    <tr><td><b>ML-DSA-65</b></td><td>PQC Lattice</td><td>1,952 B</td><td>3,309 B</td><td><span style="color: var(--neon-green); font-weight: bold;">QUANTUM RESISTANT</span></td></tr>
+                    <tr><td><b>SLH-DSA-128f</b></td><td>PQC Hash</td><td>32 B</td><td>17,088 B</td><td><span style="color: var(--neon-green); font-weight: bold;">QUANTUM RESISTANT</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function loadPQC() {
+        const name = document.getElementById('pqc_select').value;
+        const res = await fetch(`/api/pqc/scheme?name=${name}`);
+        const data = await res.json();
+
+        document.getElementById('out_pub').innerText = `${data.public_key_bytes} B`;
+        document.getElementById('out_sig').innerText = `${data.signature_bytes} B`;
+        document.getElementById('out_cat').innerText = `Category ${data.nist_security_category}`;
+        document.getElementById('out_status').innerText = data.quantum_threat_classification;
+    }
+
+    document.getElementById('inspect_pqc_btn').addEventListener('click', loadPQC);
+    loadPQC();
+</script>
+{% endblock %}

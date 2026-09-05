@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Grover Search Laboratory | Q-Sentinel{% endblock %}
+
+{% block content %}
+<div class="page-title">🔍 Grover's Quadratic Search Laboratory</div>
+
+<div class="notice-banner">
+    <b>Algorithmic Complexity Demonstration:</b> Compares classical linear search O(N) against 
+    Grover quantum amplitude amplification O(√N) for preimage and key space search.
+</div>
+
+<div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+    <div class="neo-card neo-card-yellow">
+        <h3 style="margin-bottom: 16px; text-transform: uppercase;">⚙️ Parameters</h3>
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Search Space Bits (k): <span id="k_val">8</span></label>
+        <input type="range" id="k_slider" min="4" max="12" value="8" style="width: 100%; margin-bottom: 24px;">
+
+        <button id="run_grover_btn" class="neo-btn" style="width: 100%;">🚀 RUN GROVER</button>
+    </div>
+
+    <div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="neo-card" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">SEARCH SPACE (N)</h4>
+                <h2 id="out_n" style="font-size: 20px; color: var(--neon-cyan); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-yellow" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">CLASSICAL AVG</h4>
+                <h2 id="out_class" style="font-size: 20px; color: var(--neon-yellow); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-pink" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">GROVER STEPS</h4>
+                <h2 id="out_grover" style="font-size: 20px; color: var(--neon-pink); margin-top: 4px;">-</h2>
+            </div>
+            <div class="neo-card neo-card-green" style="padding: 14px; text-align: center;">
+                <h4 style="font-size: 11px; color: #888;">SPEEDUP</h4>
+                <h2 id="out_speedup" style="font-size: 20px; color: var(--neon-green); margin-top: 4px;">-</h2>
+            </div>
+        </div>
+
+        <div class="neo-card neo-card-cyan">
+            <h3 style="margin-bottom: 16px; text-transform: uppercase;">📈 Amplitude Amplification Graph</h3>
+            <div style="height: 320px;">
+                <canvas id="groverChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let groverChart = null;
+
+    document.getElementById('k_slider').addEventListener('input', (e) => {
+        document.getElementById('k_val').innerText = e.target.value;
+    });
+
+    async function runGrover() {
+        const payload = {
+            key_space_bits: parseInt(document.getElementById('k_slider').value)
+        };
+
+        const res = await fetch('/api/grover/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        
+        document.getElementById('out_n').innerText = data.search_space_size_N.toLocaleString();
+        document.getElementById('out_class').innerText = data.classical_avg_attempts.toLocaleString();
+        document.getElementById('out_grover').innerText = data.grover_iterations;
+        document.getElementById('out_speedup').innerText = `${data.speedup_factor}x`;
+
+        // Render Amplitude Trace
+        const trace = data.amplitude_trace || [];
+        const labels = trace.map(t => `Step ${t.iteration}`);
+        const probs = trace.map(t => t.target_probability);
+
+        const ctxChart = document.getElementById('groverChart').getContext('2d');
+        if (groverChart) groverChart.destroy();
+
+        groverChart = new Chart(ctxChart, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Target Probability Amplitude',
+                    data: probs,
+                    borderColor: '#00ff66',
+                    backgroundColor: 'rgba(0, 255, 102, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 1.0, ticks: { color: '#ffffff' } },
+                    x: { ticks: { color: '#ffffff' } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } }
+                }
+            }
+        });
+    }
+
+    document.getElementById('run_grover_btn').addEventListener('click', runGrover);
+    runGrover();
+</script>
+{% endblock %}

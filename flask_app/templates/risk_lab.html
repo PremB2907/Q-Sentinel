@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Unified Quantum Risk Assessment | Q-Sentinel{% endblock %}
+
+{% block content %}
+<div class="page-title">📊 Unified Quantum Risk Engine</div>
+
+<div class="notice-banner">
+    <b>Mosca Theorem Risk Engine (Zero AI/ML):</b> Computes risk classification by combining mathematical quantum 
+    vulnerability, CRQC resource requirements, and data lifecycle horizons (X + Y > Z).
+</div>
+
+<div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+    <div class="neo-card neo-card-yellow">
+        <h3 style="margin-bottom: 16px; text-transform: uppercase;">⚙️ Configuration</h3>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Target Algorithm:</label>
+        <select id="alg_select" class="neo-select">
+            <option value="RSA-2048" selected>RSA-2048</option>
+            <option value="RSA-4096">RSA-4096</option>
+            <option value="ECDSA-P256">ECDSA-P256</option>
+            <option value="Ed25519">Ed25519</option>
+            <option value="ML-DSA-44">ML-DSA-44</option>
+            <option value="QDS-Teleportation">QDS-Teleportation</option>
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Data Retention (X years): <span id="x_val">10</span></label>
+        <input type="range" id="x_slider" min="1" max="30" value="10" style="width: 100%; margin-bottom: 16px;">
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Migration Duration (Y years): <span id="y_val">5</span></label>
+        <input type="range" id="y_slider" min="1" max="15" value="5" style="width: 100%; margin-bottom: 24px;">
+
+        <button id="eval_risk_btn" class="neo-btn" style="width: 100%;">📊 EVALUATE RISK</button>
+    </div>
+
+    <div>
+        <div id="risk_callout" class="decision-badge-reject" style="margin-bottom: 24px;">
+            INITIALIZING RISK ASSESSMENT
+        </div>
+
+        <div class="neo-card neo-card-pink">
+            <h3 style="margin-bottom: 12px; text-transform: uppercase;">⚡ Recommendations & Resource Estimates</h3>
+            <p id="action_rec" style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--neon-cyan);">-</p>
+            <p id="mosca_formula" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; background: #0a0b10; padding: 12px; border: 2px solid #000; margin-bottom: 16px;">-</p>
+            <div id="crqc_box" style="background-color: rgba(0, 240, 255, 0.1); border: 2px solid var(--neon-cyan); padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                Estimated CRQC Resources: N/A
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('x_slider').addEventListener('input', (e) => document.getElementById('x_val').innerText = e.target.value);
+    document.getElementById('y_slider').addEventListener('input', (e) => document.getElementById('y_val').innerText = e.target.value);
+
+    async function evalRisk() {
+        const payload = {
+            algorithm: document.getElementById('alg_select').value,
+            x_years: parseInt(document.getElementById('x_slider').value),
+            y_years: parseInt(document.getElementById('y_slider').value)
+        };
+
+        const res = await fetch('/api/risk/evaluate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        
+        const callout = document.getElementById('risk_callout');
+        const lvl = data.risk_level || "LOW";
+
+        if (lvl === 'CRITICAL') {
+            callout.className = 'decision-badge-reject';
+            callout.innerHTML = `🚨 UNIFIED RISK LEVEL: CRITICAL (Score: ${data.overall_risk_score_100}/100)`;
+        } else if (lvl === 'HIGH') {
+            callout.className = 'decision-badge-suspicious';
+            callout.innerHTML = `⚠️ UNIFIED RISK LEVEL: HIGH (Score: ${data.overall_risk_score_100}/100)`;
+        } else {
+            callout.className = 'decision-badge-accept';
+            callout.innerHTML = `✅ UNIFIED RISK LEVEL: LOW (Score: ${data.overall_risk_score_100}/100)`;
+        }
+
+        document.getElementById('action_rec').innerText = `Action: ${data.action_recommendation}`;
+        document.getElementById('mosca_formula').innerText = `Mosca Formula: ${data.mosca_theorem_analysis.formula_status}`;
+
+        const q = data.resource_estimates.logical_qubits_required;
+        const pq = data.resource_estimates.physical_qubits_required;
+        if (q > 0) {
+            document.getElementById('crqc_box').innerHTML = `<b>CRQC Qubits Needed:</b> ${q.toLocaleString()} logical | ${pq.toLocaleString()} surface-code physical`;
+        } else {
+            document.getElementById('crqc_box').innerHTML = `<b>CRQC Qubits Needed:</b> None (Quantum-Resistant / Physical QDS)`;
+        }
+    }
+
+    document.getElementById('eval_risk_btn').addEventListener('click', evalRisk);
+    evalRisk();
+</script>
+{% endblock %}
