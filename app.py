@@ -193,10 +193,11 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
             measurement_basis=basis_choice,
             shots=shots,
             attack_type=exp_attack_type,
-            attack_severity=severity_lambda
+            attack_severity=severity_lambda,
+            session_context=ctx
         )
 
-        res = run_qds_experiment(config, ctx)
+        res = run_qds_experiment(config)
         dec = res["detector_decision"]
 
         # Hero Callout Card
