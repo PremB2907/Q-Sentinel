@@ -109,7 +109,7 @@ st.markdown("""
 
 
 # Sidebar Navigation
-st.sidebar.image("https://img.shields.io/badge/Q--Sentinel-v0.5.0--research-blue", use_container_width=True)
+st.sidebar.image("https://img.shields.io/badge/Q--Sentinel-v0.5.0--research-blue", width="stretch")
 st.sidebar.title("🛡️ Q-Sentinel Labs")
 st.sidebar.caption("Quantum Cyber Threat Laboratory for Digital Signatures")
 
@@ -253,7 +253,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
             color_discrete_sequence=["#58a6ff", "#2ea043"]
         )
         fig.update_layout(paper_bgcolor="#161b22", plot_bgcolor="#161b22", font_color="#c9d1d9")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 
 # ==============================================================================
@@ -306,7 +306,7 @@ elif lab_choice == "🔢 Shor Factorization Laboratory":
         a_choice = st.text_input("Coprime Base (a) [Optional]:", "")
         base_a = int(a_choice) if a_choice.strip().isdigit() else None
         
-        run_btn = st.button("🚀 Execute Shor Simulation", use_container_width=True)
+        run_btn = st.button("🚀 Execute Shor Simulation", width="stretch")
 
     with col2:
         if run_btn or True:
@@ -355,7 +355,7 @@ elif lab_choice == "🔍 Grover Key Search Laboratory":
     )
     fig.update_traces(line_color="#3fb950", line_width=3)
     fig.update_layout(paper_bgcolor="#161b22", plot_bgcolor="#161b22", font_color="#c9d1d9")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 # ==============================================================================
