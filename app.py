@@ -105,7 +105,7 @@ st.markdown("""
         border-radius: 4px;
     }
 </style>
-""", unsafe_allow_warning=True)
+""", unsafe_allow_html=True)
 
 
 # Sidebar Navigation
@@ -126,7 +126,7 @@ lab_choice = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("<span class='badge-no-ai'>STRICT RULE ENGINE • NO AI/ML</span>", unsafe_allow_warning=True)
+st.sidebar.markdown("<span class='badge-no-ai'>STRICT RULE ENGINE • NO AI/ML</span>", unsafe_allow_html=True)
 st.sidebar.caption("SIH Problem Statement: SIH26141")
 
 
@@ -140,7 +140,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
     <b>SIH26141 Primary Module:</b> Continuous physical verification of 3-qubit teleported Bell states 
     (\\(|\\Phi^+\\rangle = \\frac{|00\\rangle + |11\\rangle}{\\sqrt{2}}\\)) across 6 Pauli eigenstates using deterministic statistical thresholds (z-score, Chi-Square).
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     col_setup, col_params = st.columns([1, 2])
 
@@ -208,7 +208,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
                 <div><b>Legitimate Teleportation Signature Verified</b></div>
                 <div style='margin-top: 8px;'>z-score: {dec['z_score']:.2f} | Chi2 p-val: {dec['chi2_p_value']:.4f} | Fidelity: {dec['fidelity']:.4f}</div>
             </div>
-            """, unsafe_allow_warning=True)
+            """, unsafe_allow_html=True)
         elif status == "REJECT":
             reasons_html = "".join([f"<div class='hero-threat-tag'>🚨 {r}</div><br/>" for r in dec["reasons"]])
             st.markdown(f"""
@@ -217,7 +217,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
                 <div><b>Quantum Security Threshold Breach Detected!</b></div>
                 <div style='margin-top: 8px;'>{reasons_html}</div>
             </div>
-            """, unsafe_allow_warning=True)
+            """, unsafe_allow_html=True)
         else:
             reasons_html = "".join([f"<div class='hero-threat-tag'>⚠️ {r}</div><br/>" for r in dec["reasons"]])
             st.markdown(f"""
@@ -226,7 +226,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
                 <div><b>Anomalous Measurement Distribution Detected</b></div>
                 <div style='margin-top: 8px;'>{reasons_html}</div>
             </div>
-            """, unsafe_allow_warning=True)
+            """, unsafe_allow_html=True)
 
         # Plotly Distribution Chart
         counts = res["counts"]
@@ -261,7 +261,7 @@ elif lab_choice == "⚡ Classical Signature Threats Overview":
     <b>Research Objective:</b> Evaluate how future Cryptographically Relevant Quantum Computers (CRQCs) threaten 
     legacy digital signature algorithms (RSA, ECDSA, Ed25519) via Shor's and Grover's quantum algorithms.
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     c1.metric("RSA-2048 Shor Risk", "CRITICAL", "Shor's Algorithm (Polynomial)")
@@ -292,7 +292,7 @@ elif lab_choice == "🔢 Shor Factorization Laboratory":
     \\(f(x) = a^x \\pmod N\\) to recover prime factors of semiprimes. 
     <b>Note:</b> Production RSA-2048 requires a physical fault-tolerant CRQC (~4,098 logical qubits).
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 2])
 
@@ -327,7 +327,7 @@ elif lab_choice == "🔍 Grover Key Search Laboratory":
     <b>Algorithmic Complexity Demonstration:</b> Compares classical linear search \\(O(N)\\) 
     against Grover quantum amplitude amplification \\(O(\\sqrt{N})\\) for preimage and key space search.
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     k_bits = st.slider("Search Space Bit Length (k):", 4, 12, 8)
     res = run_grover_search_analysis(key_space_bits=k_bits)
@@ -363,7 +363,7 @@ elif lab_choice == "📜 Post-Quantum (PQC) Comparison":
     <b>NIST FIPS 204 / 205 Standards:</b> Evaluates ML-DSA (Module-Lattice) and SLH-DSA (Stateless Hash-based) 
     signature overheads against classical ECDSA P-256 and RSA-2048.
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     pqc_schemes = list_pqc_schemes()
     selected_pqc = st.selectbox("Select NIST PQC Scheme:", pqc_schemes, index=0)
@@ -396,7 +396,7 @@ elif lab_choice == "📊 Unified Quantum Risk Assessment":
     <b>Mosca Theorem Risk Engine (Zero AI/ML):</b> Computes risk classification by combining 
     mathematical quantum vulnerability, CRQC resource requirements, and data lifecycle horizons (\\(X + Y > Z\\)).
     </div>
-    """, unsafe_allow_warning=True)
+    """, unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 2])
 
@@ -421,4 +421,4 @@ elif lab_choice == "📊 Unified Quantum Risk Assessment":
 
         if risk_res["resource_estimates"]["logical_qubits_required"] > 0:
             st.info(f"<b>Estimated CRQC Logical Qubits:</b> {risk_res['resource_estimates']['logical_qubits_required']:,} | "
-                    f"<b>Physical Surface Code Qubits:</b> {risk_res['resource_estimates']['physical_qubits_required']:,}", unsafe_allow_warning=True)
+                    f"<b>Physical Surface Code Qubits:</b> {risk_res['resource_estimates']['physical_qubits_required']:,}", unsafe_allow_html=True)
