@@ -198,20 +198,25 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
         )
 
         res = run_qds_experiment(config)
-        dec = res["detector_decision"]
+        
+        status = res.get("decision", "ACCEPT")
+        z_score = res.get("z_score", 0.0)
+        p_val = res.get("p_value", 1.0)
+        fidelity = res.get("fidelity", 1.0)
+        reason = res.get("reason", "")
+        reasons = [r.strip() for r in reason.split(";") if r.strip()] if reason else []
 
         # Hero Callout Card
-        status = dec["status"]
         if status == "ACCEPT":
             st.markdown(f"""
             <div class='hero-accept'>
                 <div class='hero-title-accept'>✅ DECISION: ACCEPT</div>
                 <div><b>Legitimate Teleportation Signature Verified</b></div>
-                <div style='margin-top: 8px;'>z-score: {dec['z_score']:.2f} | Chi2 p-val: {dec['chi2_p_value']:.4f} | Fidelity: {dec['fidelity']:.4f}</div>
+                <div style='margin-top: 8px;'>z-score: {z_score:.2f} | Chi2 p-val: {p_val:.4f} | Fidelity: {fidelity:.4f}</div>
             </div>
             """, unsafe_allow_html=True)
         elif status == "REJECT":
-            reasons_html = "".join([f"<div class='hero-threat-tag'>🚨 {r}</div><br/>" for r in dec["reasons"]])
+            reasons_html = "".join([f"<div class='hero-threat-tag'>🚨 {r}</div><br/>" for r in reasons]) if reasons else "<div class='hero-threat-tag'>🚨 Quantum Verification Failed</div>"
             st.markdown(f"""
             <div class='hero-reject'>
                 <div class='hero-title-reject'>❌ DECISION: REJECT</div>
@@ -220,7 +225,7 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
             </div>
             """, unsafe_allow_html=True)
         else:
-            reasons_html = "".join([f"<div class='hero-threat-tag'>⚠️ {r}</div><br/>" for r in dec["reasons"]])
+            reasons_html = "".join([f"<div class='hero-threat-tag'>⚠️ {r}</div><br/>" for r in reasons]) if reasons else "<div class='hero-threat-tag'>⚠️ Statistical Anomaly</div>"
             st.markdown(f"""
             <div class='hero-suspicious'>
                 <div class='hero-title-suspicious'>⚠️ DECISION: SUSPICIOUS</div>
@@ -230,14 +235,13 @@ if lab_choice == "🛡️ QDS Threat Lab (SIH26141 Baseline)":
             """, unsafe_allow_html=True)
 
         # Plotly Distribution Chart
-        counts = res["counts"]
-        total = sum(counts.values())
-        exp_p0, exp_p1 = res["expected_probs"]
+        obs_probs = res.get("observed_probability", {"0": 0.5, "1": 0.5})
+        base_probs = res.get("baseline_probability", {"0": 0.5, "1": 0.5})
         
         df_chart = pd.DataFrame({
             "Outcome": ["|0⟩ (+1)", "|1⟩ (-1)"],
-            "Measured Probability": [counts.get("0", 0)/total, counts.get("1", 0)/total],
-            "Expected Clean Probability": [exp_p0, exp_p1]
+            "Measured Probability": [obs_probs.get("0", 0.0), obs_probs.get("1", 0.0)],
+            "Expected Clean Probability": [base_probs.get("0", 0.5), base_probs.get("1", 0.5)]
         })
         
         fig = px.bar(
