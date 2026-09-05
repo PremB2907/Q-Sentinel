@@ -118,8 +118,14 @@
         }
 
         // Update Chart
-        const obs = data.observed_probability || { "0": 0.5, "1": 0.5 };
-        const base = data.baseline_probability || { "0": 0.5, "1": 0.5 };
+        const obs = data.observed_probability || {};
+        const base = data.baseline_probability || {};
+
+        const p0_obs = parseFloat(obs["0"] !== undefined ? obs["0"] : (obs["+"] !== undefined ? obs["+"] : 0.5));
+        const p1_obs = parseFloat(obs["1"] !== undefined ? obs["1"] : (obs["-"] !== undefined ? obs["-"] : 0.5));
+
+        const p0_base = parseFloat(base["0"] !== undefined ? base["0"] : (base["+"] !== undefined ? base["+"] : 0.5));
+        const p1_base = parseFloat(base["1"] !== undefined ? base["1"] : (base["-"] !== undefined ? base["-"] : 0.5));
 
         const ctxChart = document.getElementById('qdsChart').getContext('2d');
         
@@ -128,21 +134,23 @@
         qdsChart = new Chart(ctxChart, {
             type: 'bar',
             data: {
-                labels: ['|0⟩ (+1)', '|1⟩ (-1)'],
+                labels: ['|0⟩ / |+⟩ (+1)', '|1⟩ / |-> (-1)'],
                 datasets: [
                     {
                         label: 'Measured Probability',
-                        data: [obs["0"] || 0, obs["1"] || 0],
+                        data: [p0_obs, p1_obs],
                         backgroundColor: '#00f0ff',
                         borderColor: '#000000',
-                        borderWidth: 2
+                        borderWidth: 3,
+                        borderRadius: 4
                     },
                     {
                         label: 'Expected Clean Probability',
-                        data: [base["0"] || 0, base["1"] || 0],
+                        data: [p0_base, p1_base],
                         backgroundColor: '#00ff66',
                         borderColor: '#000000',
-                        borderWidth: 2
+                        borderWidth: 3,
+                        borderRadius: 4
                     }
                 ]
             },
@@ -150,11 +158,19 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, max: 1.0, ticks: { color: '#ffffff' } },
-                    x: { ticks: { color: '#ffffff' } }
+                    y: { 
+                        beginAtZero: true, 
+                        max: 1.0, 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#ffffff', font: { weight: 'bold', family: 'JetBrains Mono' } } 
+                    },
+                    x: { 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#ffffff', font: { weight: 'bold', family: 'Space Grotesk' } } 
+                    }
                 },
                 plugins: {
-                    legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } }
+                    legend: { labels: { color: '#ffffff', font: { weight: 'bold', size: 14 } } }
                 }
             }
         });
