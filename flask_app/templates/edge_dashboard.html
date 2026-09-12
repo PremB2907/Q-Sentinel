@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Q-Sentinel Edge | Snapdragon AI Security Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-title" style="background-color: var(--neon-cyan); color: #000000;">⚡ Q-SENTINEL EDGE: ON-DEVICE SNAPDRAGON AI</div>
+
+<div class="notice-banner" style="border-left-color: var(--neon-pink);">
+    <b>Qualcomm Snapdragon® AI Lab Challenge:</b> Privacy-Preserving On-Device Quantum Security Intelligence for Snapdragon-Powered HP PCs. 
+    <b>Core Principle:</b> Local Edge AI interprets evidence; deterministic Q-Sentinel engine makes authoritative security decision.
+</div>
+
+<!-- Status Header Banner -->
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+    <div class="neo-card neo-card-cyan" style="padding: 16px; text-align: center;">
+        <h4 style="font-size: 11px; color: #888;">TARGET HARDWARE</h4>
+        <h3 style="font-size: 15px; color: var(--neon-cyan); margin-top: 4px;">Snapdragon HP PCs</h3>
+    </div>
+    <div class="neo-card neo-card-pink" style="padding: 16px; text-align: center;">
+        <h4 style="font-size: 11px; color: #888;">ACTIVE ACCELERATOR</h4>
+        <h3 id="status_provider" style="font-size: 14px; color: var(--neon-pink); margin-top: 4px;">{{ hw_info.accelerator_status }}</h3>
+    </div>
+    <div class="neo-card neo-card-green" style="padding: 16px; text-align: center;">
+        <h4 style="font-size: 11px; color: #888;">LOCAL PRIVACY MODE</h4>
+        <h3 style="font-size: 15px; color: var(--neon-green); margin-top: 4px;">100% LOCAL ON-DEVICE</h3>
+    </div>
+    <div class="neo-card neo-card-yellow" style="padding: 16px; text-align: center;">
+        <h4 style="font-size: 11px; color: #888;">CLOUD REQUESTS</h4>
+        <h3 style="font-size: 20px; color: var(--neon-yellow); margin-top: 4px;">0 (OFFLINE SAFE)</h3>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 340px 1fr; gap: 24px;">
+    <!-- Controls Column -->
+    <div class="neo-card neo-card-yellow">
+        <h3 style="margin-bottom: 16px; text-transform: uppercase;">🎮 DEMO SIMULATION</h3>
+        
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Pauli State (|ψ⟩):</label>
+        <select id="edge_state" class="neo-select">
+            {% for st_name in pauli_states %}
+            <option value="{{ st_name }}">{{ st_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Measurement Basis:</label>
+        <select id="edge_basis" class="neo-select">
+            <option value="Z" selected>Z Basis</option>
+            <option value="X">X Basis</option>
+            <option value="Y">Y Basis</option>
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Shots: <span id="edge_shots_val">1000</span></label>
+        <input type="range" id="edge_shots" min="100" max="5000" step="100" value="1000" style="width: 100%; margin-bottom: 16px;">
+
+        <hr style="border: 1px solid #000000; margin: 16px 0;">
+
+        <h4 style="margin-bottom: 12px; text-transform: uppercase; color: var(--neon-pink);">🔥 Threat Vector</h4>
+        <select id="edge_attack" class="neo-select">
+            <option value="clean" selected>Clean Legitimate Session</option>
+            <option value="replay">Protocol Replay Attack (Stale Nonce)</option>
+            <option value="impersonation">Protocol Impersonation (Wrong Signer)</option>
+            <option value="state_forgery">Controlled State Forgery</option>
+            <option value="bit_flip">Bit-Flip Noise Channel</option>
+            <option value="phase_flip">Phase-Flip Noise Channel</option>
+            <option value="depolarizing">Depolarizing Noise Channel</option>
+        </select>
+
+        <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Attack Severity (λ): <span id="edge_sev_val">0.35</span></label>
+        <input type="range" id="edge_sev" min="0.0" max="1.0" step="0.05" value="0.35" style="width: 100%; margin-bottom: 24px;">
+
+        <button id="run_edge_btn" class="neo-btn" style="width: 100%;">⚡ RUN EDGE ANALYSIS</button>
+        <button id="run_bench_btn" class="neo-btn" style="width: 100%; margin-top: 12px; background-color: var(--neon-yellow);">📈 RUN BENCHMARK</button>
+    </div>
+
+    <!-- Edge AI Analysis & Verification Column -->
+    <div>
+        <!-- Two-Tier Decision Split Banner -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div id="ai_badge" class="decision-badge-suspicious" style="padding: 16px;">
+                AI ADVISORY:<br><span id="ai_cls">INITIALIZING</span>
+            </div>
+            <div id="det_badge" class="decision-badge-accept" style="padding: 16px;">
+                DETERMINISTIC VERIFIER:<br><span id="det_dec">INITIALIZING</span>
+            </div>
+        </div>
+
+        <!-- Evidence & Confidence Box -->
+        <div class="neo-card neo-card-green">
+            <h3 style="margin-bottom: 12px; text-transform: uppercase;">🔍 GROUNDED EVIDENCE & TRIAGE ANALYSIS</h3>
+            <pre id="evidence_box" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--neon-cyan); background-color: #0a0b10; padding: 16px; border: 2px solid #000; white-space: pre-wrap; margin-bottom: 16px;">Running analysis...</pre>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div style="background: #10121a; padding: 10px; border: 2px solid #000;">
+                    <div style="font-size: 11px; color: #888;">AI CONFIDENCE (ATTACK)</div>
+                    <div id="conf_attack" style="font-size: 18px; font-weight: bold; color: var(--neon-pink);">-</div>
+                </div>
+                <div style="background: #10121a; padding: 10px; border: 2px solid #000;">
+                    <div style="font-size: 11px; color: #888;">INFERENCE LATENCY</div>
+                    <div id="inf_lat" style="font-size: 18px; font-weight: bold; color: var(--neon-yellow);">-</div>
+                </div>
+                <div style="background: #10121a; padding: 10px; border: 2px solid #000;">
+                    <div style="font-size: 11px; color: #888;">TRIAGE PRIORITY</div>
+                    <div id="triage_prio" style="font-size: 16px; font-weight: bold; color: var(--neon-green);">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benchmark Output Container -->
+        <div id="bench_container" class="neo-card neo-card-pink" style="display: none;">
+            <h3 style="margin-bottom: 12px; text-transform: uppercase;">📊 EMPIRICAL RUNTIME BENCHMARK</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                <div>AVG LATENCY:<br><b id="bm_avg" style="font-size: 16px; color: var(--neon-cyan);">-</b></div>
+                <div>MIN LATENCY:<br><b id="bm_min" style="font-size: 16px; color: var(--neon-green);">-</b></div>
+                <div>P95 LATENCY:<br><b id="bm_p95" style="font-size: 16px; color: var(--neon-yellow);">-</b></div>
+                <div>THROUGHPUT:<br><b id="bm_fps" style="font-size: 16px; color: var(--neon-pink);">-</b></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('edge_shots').addEventListener('input', (e) => document.getElementById('edge_shots_val').innerText = e.target.value);
+    document.getElementById('edge_sev').addEventListener('input', (e) => document.getElementById('edge_sev_val').innerText = e.target.value);
+
+    async function runEdgeAnalysis() {
+        const payload = {
+            state_label: document.getElementById('edge_state').value,
+            basis: document.getElementById('edge_basis').value,
+            shots: parseInt(document.getElementById('edge_shots').value),
+            attack_type: document.getElementById('edge_attack').value,
+            severity: parseFloat(document.getElementById('edge_sev').value)
+        };
+
+        const res = await fetch('/api/edge/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        
+        // AI Advisory Badge
+        const aiCls = data.ai_analysis.classification;
+        const aiConf = (data.ai_analysis.top_confidence * 100).toFixed(1);
+        const aiBox = document.getElementById('ai_badge');
+        document.getElementById('ai_cls').innerText = `${aiCls} (${aiConf}%)`;
+
+        if (aiCls === 'ATTACK') aiBox.className = 'decision-badge-reject';
+        else if (aiCls === 'SUSPICIOUS') aiBox.className = 'decision-badge-suspicious';
+        else aiBox.className = 'decision-badge-accept';
+
+        // Deterministic Verifier Badge
+        const detDec = data.deterministic_verification.decision;
+        const detBox = document.getElementById('det_badge');
+        document.getElementById('det_dec').innerText = detDec;
+
+        if (detDec === 'REJECT') detBox.className = 'decision-badge-reject';
+        else if (detDec === 'SUSPICIOUS') detBox.className = 'decision-badge-suspicious';
+        else detBox.className = 'decision-badge-accept';
+
+        // Evidence & Metrics
+        document.getElementById('evidence_box').innerText = data.evidence_explanation;
+        document.getElementById('conf_attack').innerText = `${(data.ai_analysis.confidence_scores.ATTACK * 100).toFixed(1)}%`;
+        document.getElementById('inf_lat').innerText = `${data.ai_analysis.inference_latency_ms} ms`;
+        document.getElementById('triage_prio').innerText = data.triage.priority;
+    }
+
+    async function runBenchmark() {
+        const res = await fetch('/api/edge/benchmark', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ iterations: 100 })
+        });
+        const bm = await res.json();
+
+        document.getElementById('bm_avg').innerText = `${bm.avg_latency_ms} ms`;
+        document.getElementById('bm_min').innerText = `${bm.min_latency_ms} ms`;
+        document.getElementById('bm_p95').innerText = `${bm.p95_latency_ms} ms`;
+        document.getElementById('bm_fps').innerText = `${bm.throughput_fps} req/s`;
+
+        document.getElementById('bench_container').style.display = 'block';
+    }
+
+    document.getElementById('run_edge_btn').addEventListener('click', runEdgeAnalysis);
+    document.getElementById('run_bench_btn').addEventListener('click', runBenchmark);
+    runEdgeAnalysis();
+</script>
+{% endblock %}

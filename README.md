@@ -1,50 +1,40 @@
-# 🛡️ Q-Sentinel: Quantum Cyber Threat Laboratory for Digital Signature Security
+# 🛡️ Q-Sentinel Edge: Privacy-Preserving On-Device Quantum Security Intelligence for Snapdragon-Powered HP PCs
 
+[![Qualcomm Snapdragon AI Lab](https://img.shields.io/badge/Qualcomm-Snapdragon%C2%AE%20AI%20Lab-ff0055)](https://github.com/PremB2907/Q-Sentinel)
 [![Problem Statement](https://img.shields.io/badge/SIH-SIH26141-blue)](https://www.sih.gov.in/sih2026PS)
-[![Domain](https://img.shields.io/badge/Domain-Blockchain%20%26%20Cybersecurity-purple)](#)
-[![Methodology](https://img.shields.io/badge/Detection-Rule--Based%20%2F%20No%20AI%2FML-green)](#)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-informational)](#)
-[![Framework](https://img.shields.io/badge/UI-Flask%20%2B%20Neo--Brutalism-ff0055)](#)
-[![Qiskit](https://img.shields.io/badge/Qiskit-2.x-6100a8)](#)
+[![Methodology](https://img.shields.io/badge/Authoritative%20Verifier-Deterministic%20%2F%20No%20AI%2FML-green)](#)
+[![Edge AI](https://img.shields.io/badge/Edge%20AI-ONNX%20%2F%20QNN%20NPU-00f0ff)](#)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local%20On--Device-yellow)](#)
 
-> **Build Target**: A dual-domain **Quantum Cyber Threat Laboratory** featuring a primary teleportation-based **Quantum Digital Signature (QDS) Security Detector** (SIH26141 core) alongside a **Classical Digital Signature Quantum-Threat Analysis Engine**, **Post-Quantum Signature Benchmarking**, and **Deterministic Quantum Risk Scoring** with **NO AI/ML**.
+> **Challenge Submission**: Developed for the **Snapdragon® AI Lab Build & Present Challenge by Qualcomm**, targeting **Snapdragon-powered HP PCs**. Combining a deterministic continuous continuous-variable teleportation Quantum Digital Signature (QDS) detector with an on-device ONNX / Qualcomm QNN local AI intelligence layer.
 
 ---
 
-## 🌟 Key Architecture & Capabilities
+## 🌟 Architectural Principle: AI Advises, Math Verifies
 
 ```
-Q-Sentinel System Architecture
+Q-Sentinel Edge Dual-Tier Security Architecture
 │
-├── 🛡️ Domain A: Quantum Signature Security (SIH26141 Primary Baseline)
+├── 🛡️ Authoritative Cryptographic Core (SIH26141 Baseline - 100% Deterministic)
 │   ├── QDS Teleportation Engine (3-qubit Bell states |Φ⁺⟩, Pauli projections)
 │   ├── Statistical Detector Engine (z-score, Chi-Square test, p-values, empirical calibration)
-│   └── Protocol Integrity Verification (State forgery, channel noise, replay & impersonation)
+│   └── Protocol Integrity Engine (State forgery, channel noise, replay & impersonation)
 │
-├── ⚡ Domain B: Classical Signature Quantum Threat Analysis (Attack Engine)
-│   ├── Shor Factorization Lab (Toy integer factorization: N = 15, 21, 35, 77, 91, 143)
-│   ├── ECC Discrete Log Lab (Toy curve discrete-log state modeling over GF(p))
-│   ├── Grover Search Lab (Quadratic preimage search complexity O(N) vs O(√N))
-│   └── CRQC Resource Estimator (Logical qubits, T-depth, surface code physical qubits)
+├── ⚡ On-Device Edge AI Intelligence Layer (Local ONNX / Qualcomm QNN)
+│   ├── SecurityEvent Schema (Standard 12-feature telemetry schema)
+│   ├── Edge Threat Classifier (Local ONNX Runtime / QNN NPU inference)
+│   ├── Grounded Explainer Engine (Non-hallucinating evidence generator)
+│   └── Triage & Prioritization Engine (P1 Critical / P2 Anomalous / P3 Normal)
 │
-├── 📜 Domain C: Post-Quantum Signature (PQC) Analysis
-│   ├── NIST PQC Standards (FIPS 204 ML-DSA-44/65/87, FIPS 205 SLH-DSA-128/192/256)
-│   └── Public Key & Signature Size Overhead Benchmarking
+├── 🐉 Snapdragon Hardware Acceleration (Qualcomm QNN Abstraction)
+│   ├── Primary: QNNExecutionProvider (Snapdragon Hexagon NPU)
+│   ├── Fallback 1: DmlExecutionProvider (DirectML GPU)
+│   └── Fallback 2: CPUExecutionProvider (OpenMP CPU Development Fallback)
 │
-├── 📊 Domain D: Unified Deterministic Risk Assessment
-│   ├── Mosca Theorem Migration Horizon Calculation (X + Y > Z)
-│   └── Risk Classification (LOW, MODERATE, HIGH, CRITICAL)
-│
-└── 🎨 Frontend: Flask + Neo-Brutalism & Cinematic Quantum Wave Canvas
+└── 🎨 Neo-Brutalism Flask Dashboard
+    ├── ⚡ Q-Sentinel Edge Dashboard (Live AI + Deterministic split callout)
+    └── 🛡️ Legacy Laboratories (QDS Lab, Shor, Grover, PQC, Risk Engine)
 ```
-
----
-
-## 🎨 Neo-Brutalism UI & Cinematic Quantum Interface
-
-- **High-Contrast Design System**: Bold 3px solid black borders, hard offset drop shadows (`5px 5px 0px #00f0ff` / `#ff0055` / `#00ff66`), zero border radius cards.
-- **Cinematic Canvas Background**: Dynamic HTML5 canvas simulation rendering real-time quantum wave packet superposition and entangled particle networks.
-- **Interactive REST APIs**: Flask API-driven dashboard rendering live Chart.js probability distribution updates.
 
 ---
 
@@ -61,25 +51,22 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 2. Run Unit Test Suite
+### 2. Run Comprehensive Test Suite
 ```bash
 pytest tests/ -v
 ```
-*(All 43 unit tests passing: 25 legacy QDS tests + 18 new quantum attack tests).*
+*(All 53 unit tests passing: 43 baseline QDS tests + 10 edge AI / Snapdragon runtime tests).*
 
-### 3. Run Reproducible Research Experiments
+### 3. Train Model & Export ONNX Classifier
 ```bash
-python experiments/quantum_attacks/shor_rsa_experiment.py
-python experiments/quantum_attacks/grover_search_experiment.py
-python experiments/quantum_attacks/ecc_dlog_experiment.py
-python experiments/quantum_attacks/pqc_benchmark_experiment.py
+python src/qds_detector/edge_ai/train.py
 ```
 
-### 4. Launch Flask Neo-Brutalism Security System
+### 4. Launch Q-Sentinel Edge Dashboard
 ```bash
 python wsgi.py
 ```
-Open **`http://localhost:5000`** in your browser.
+Open **`http://localhost:5000/edge`** in your browser.
 
 ---
 
@@ -88,66 +75,48 @@ Open **`http://localhost:5000`** in your browser.
 ```
 .
 ├── wsgi.py                      # Flask server WSGI entrypoint script
-├── requirements.txt              # Dependency specification (Qiskit, Flask, Pytest)
-├── pyproject.toml               # Package build configuration
+├── requirements.txt              # Dependency specification (Qiskit, Flask, ONNX Runtime, Pytest)
 ├── flask_app/                   # Flask Web Application & Neo-Brutalism UI
-│   ├── __init__.py              # App factory
-│   ├── routes.py                # Page routes and JSON REST API handlers
-│   ├── static/
-│   │   ├── css/
-│   │   │   └── neo_brutalism.css# Neo-Brutalism design system stylesheet
-│   │   └── js/
-│   │       └── quantum_canvas.js# Cinematic quantum particle background animation
-│   └── templates/               # Jinja2 Neo-Brutalism HTML Templates
-│       ├── base.html            # Core layout & sidebar navigation
-│       ├── qds_lab.html         # 🛡️ QDS Teleportation Threat Lab (Primary SIH Module)
-│       ├── classical_threats.html# ⚡ Classical Signature Threat Matrix Overview
-│       ├── shor_lab.html        # 🔢 Shor Factorization Laboratory
-│       ├── grover_lab.html      # 🔍 Grover Search Complexity Laboratory
-│       ├── pqc_lab.html         # 📜 NIST PQC Comparison Laboratory
-│       └── risk_lab.html        # 📊 Unified Quantum Risk Assessment Engine
+│   ├── routes.py                # Page routes & REST APIs (/api/edge/analyze, /api/edge/status, etc.)
+│   └── templates/
+│       ├── base.html            # Base template & navigation
+│       ├── edge_dashboard.html  # ⚡ Q-Sentinel Edge Snapdragon AI Dashboard
+│       └── qds_lab.html         # 🛡️ QDS Teleportation Threat Lab
 ├── src/
 │   └── qds_detector/
-│       ├── config.py            # ExperimentConfig, SessionContext, ThresholdConfig
-│       ├── states.py            # 6 Pauli basis eigenstates & density matrices
-│       ├── bell.py              # Bell pair preparation & measurement
-│       ├── teleportation.py     # 3-qubit quantum teleportation pipeline
-│       ├── measurements.py      # Pauli projective measurement operators (X, Y, Z)
-│       ├── channels.py          # Bit-flip, phase-flip, depolarizing quantum noise
-│       ├── attacks.py           # Quantum state forgery & protocol replay/impersonation
-│       ├── statistics.py        # z-score, Chi-Square, p-values, probability deviation
-│       ├── detector.py          # Deterministic decision rule engine (ACCEPT/SUSPICIOUS/REJECT)
-│       ├── metrics.py           # Security metrics (TPR, FPR, FAR, FRR)
+│       ├── config.py            # Dataclasses (ExperimentConfig, SessionContext, ThresholdConfig)
 │       ├── protocol.py          # End-to-end QDS protocol orchestrator
-│       ├── calibration.py       # Empirical threshold calibration
-│       ├── reporting.py         # Reproducibility JSON/CSV exporter
-│       └── quantum_attacks/     # Classical Signature Quantum Threat Engine
-│           ├── shor.py          # Shor's period finding & factorizer
-│           ├── ecc_analysis.py  # ECC discrete log attack simulation
-│           ├── grover.py        # Grover preimage search analysis
-│           ├── resource_estimator.py # CRQC surface code resource estimator
-│           ├── pqc_analysis.py  # NIST ML-DSA / SLH-DSA metadata
-│           └── quantum_risk.py  # Deterministic risk classification engine
-├── experiments/                 # Research experiment suite & JSON result outputs
-├── tests/                       # Automated unit test suite (43 passing tests)
-└── docs/                        # Technical architecture & threat model documentation
+│       ├── detector.py          # Deterministic 3-state decision engine (ACCEPT/SUSPICIOUS/REJECT)
+│       ├── edge_ai/             # [NEW] On-Device Edge AI Intelligence Layer
+│       │   ├── schema.py        # SecurityEvent typed dataclass & JSON schema
+│       │   ├── features.py      # 12-feature telemetry extractor
+│       │   ├── classifier.py    # Local ONNX / QNN threat classifier
+│       │   ├── explainer.py     # Grounded non-hallucinating evidence generator
+│       │   ├── triage.py        # Priority triage engine (P1 / P2 / P3)
+│       │   ├── dataset_generator.py # Simulation-backed synthetic dataset generator
+│       │   └── train.py         # Model training & ONNX export script
+│       ├── snapdragon/          # [NEW] Qualcomm Snapdragon & QNN Abstraction
+│       │   ├── runtime.py       # ONNX Runtime provider hierarchy manager
+│       │   ├── qnn_backend.py   # Qualcomm QNN Execution Provider detector
+│       │   ├── model_info.py   # Hardware & metadata reporter
+│       │   └── benchmark.py     # Empirical latency & throughput benchmarker
+│       └── models/              # [NEW] Exported ONNX Model Artifacts
+│           └── q_sentinel_threat_classifier.onnx
+├── tests/                       # Automated unit test suite (53 passing tests)
+└── docs/                        # Technical architecture & deployment documentation
+    └── snapdragon_qnn_deployment.md # Snapdragon HP PC deployment guide
 ```
 
 ---
 
-## 🔬 Scientific Limitations & Guardrails
+## 🔒 Privacy & Snapdragon NPU Hardware Transparency
 
-> [!IMPORTANT]
-> **Scientific Integrity Standard**:
-> 1. Interactive classical cryptanalysis (Shor, ECC discrete log) operates strictly on **educational toy-scale parameters** ($N \in \{15, 21, 35, 77\}$ or small prime fields $\mathbb{F}_p$).
-> 2. Real-world parameter evaluations (e.g., RSA-2048 or ECDSA P-256) are calculated via a dedicated **fault-tolerant CRQC surface code resource estimation model**.
-> 3. Zero AI/ML models are used across any detection or risk engine; all decisions rely on transparent deterministic mathematical rules and hypothesis testing.
-> 4. PQC standards (ML-DSA / SLH-DSA) are described as *"designed to resist known classical and quantum attack strategies"* without claiming unbacked absolute mathematical proof.
+- **100% Local On-Device Processing**: Telemetry is analyzed locally on the Snapdragon host—zero cloud network calls.
+- **Truthful Hardware Reporting**: The UI queries `onnxruntime.get_available_providers()` and displays `QNNExecutionProvider (Hexagon NPU)` on Snapdragon hardware or `CPUExecutionProvider` on Ubuntu development machines without fabricating metrics.
 
 ---
 
 ## 📜 References & Standards
-1. Smart India Hackathon 2026, Problem Statement SIH26141, Egreen Quanta.
-2. NIST FIPS 204: Module-Lattice-Based Digital Signature Standard (ML-DSA), 2024.
-3. NIST FIPS 205: Stateless Hash-Based Digital Signature Standard (SLH-DSA), 2024.
-4. Gidney, C., & Ekerå, M. (2021). How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits. *Quantum*, 5, 433.
+1. Snapdragon® AI Lab Build & Present Challenge, Qualcomm, 2026.
+2. Smart India Hackathon 2026, Problem Statement SIH26141, Egreen Quanta.
+3. Qualcomm Neural Processing SDK / QNN Execution Provider Documentation.

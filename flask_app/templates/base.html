@@ -15,6 +15,7 @@
     <div class="sidebar">
         <div class="brand-badge">🛡️ Q-SENTINEL</div>
         <ul class="nav-menu">
+            <li><a href="/edge" class="nav-link {% if request.path == '/edge' %}active{% endif %}" style="background-color: var(--neon-pink); color: #ffffff;">⚡ Q-SENTINEL EDGE</a></li>
             <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">🛡️ QDS Threat Lab</a></li>
             <li><a href="/classical-threats" class="nav-link {% if request.path == '/classical-threats' %}active{% endif %}">⚡ Classical Threats</a></li>
             <li><a href="/shor" class="nav-link {% if request.path == '/shor' %}active{% endif %}">🔢 Shor Factorizer</a></li>
@@ -22,7 +23,8 @@
             <li><a href="/pqc" class="nav-link {% if request.path == '/pqc' %}active{% endif %}">📜 PQC Comparison</a></li>
             <li><a href="/risk" class="nav-link {% if request.path == '/risk' %}active{% endif %}">📊 Risk Assessment</a></li>
         </ul>
-        <div class="rule-badge">⚡ STRICT RULE ENGINE • NO AI/ML</div>
+        <div class="rule-badge" style="margin-top: 12px;">🔒 100% LOCAL PRIVACY MODE</div>
+        <div class="rule-badge">⚡ MATH VERIFIES • AI ADVISES</div>
     </div>
 
     <!-- Main Content Area -->

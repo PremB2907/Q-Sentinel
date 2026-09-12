@@ -1,6 +1,7 @@
 """
 Q-Sentinel Flask Routes and REST API Blueprint.
 SIH26141 • Egreen Quanta
+Qualcomm Snapdragon AI Lab Challenge
 """
 
 from flask import Blueprint, render_template, request, jsonify
@@ -18,6 +19,14 @@ from qds_detector.quantum_attacks.resource_estimator import estimate_crqc_resour
 from qds_detector.quantum_attacks.pqc_analysis import get_pqc_scheme_metadata, list_pqc_schemes
 from qds_detector.quantum_attacks.quantum_risk import evaluate_quantum_risk
 
+# Edge AI & Snapdragon Runtime
+from qds_detector.edge_ai.schema import SecurityEvent
+from qds_detector.edge_ai.classifier import get_default_classifier
+from qds_detector.edge_ai.triage import analyze_and_triage_event
+from qds_detector.snapdragon.qnn_backend import get_qnn_status_info
+from qds_detector.snapdragon.model_info import get_edge_hardware_info
+from qds_detector.snapdragon.benchmark import run_edge_benchmark
+
 
 main_bp = Blueprint("main", __name__)
 
@@ -29,6 +38,13 @@ main_bp = Blueprint("main", __name__)
 def index():
     """QDS Threat Lab Main Dashboard."""
     return render_template("qds_lab.html", pauli_states=list(PAULI_STATES.keys()))
+
+
+@main_bp.route("/edge")
+def edge_dashboard():
+    """Q-Sentinel Edge Snapdragon AI Dashboard."""
+    hw_info = get_edge_hardware_info()
+    return render_template("edge_dashboard.html", pauli_states=list(PAULI_STATES.keys()), hw_info=hw_info)
 
 
 @main_bp.route("/classical-threats")
@@ -92,6 +108,63 @@ def api_qds_run():
     )
 
     res = run_qds_experiment(config)
+    return jsonify(res)
+
+
+# ==============================================================================
+# Q-Sentinel Edge APIs
+# ==============================================================================
+@main_bp.route("/api/edge/status", methods=["GET"])
+def api_edge_status():
+    """Return Snapdragon hardware & QNN execution status."""
+    return jsonify({
+        "qnn_status": get_qnn_status_info(),
+        "hardware_info": get_edge_hardware_info()
+    })
+
+
+@main_bp.route("/api/edge/analyze", methods=["POST"])
+def api_edge_analyze():
+    """
+    Executes combined QDS teleportation simulation and local Edge AI threat analysis.
+    """
+    data = request.get_json() or {}
+    state_label = data.get("state_label", "|0>")
+    basis_choice = data.get("basis", "Z")
+    shots = int(data.get("shots", 1000))
+    attack_type = data.get("attack_type", "clean")
+    severity = float(data.get("severity", 0.0))
+
+    ctx = SessionContext(
+        nonce="valid_nonce_1001" if attack_type != "replay" else "expired_nonce_999",
+        signer_id="Alice_PubKey_0x8F4A" if attack_type != "impersonation" else "Eve_Mallory",
+        expected_signer_id="Alice_PubKey_0x8F4A"
+    )
+
+    config = ExperimentConfig(
+        input_state=state_label,
+        measurement_basis=basis_choice,
+        shots=shots,
+        attack_type=attack_type,
+        attack_severity=severity,
+        session_context=ctx
+    )
+
+    qds_record = run_qds_experiment(config)
+    event = SecurityEvent.from_experiment_record(qds_record)
+
+    triage_payload = analyze_and_triage_event(event)
+    triage_payload["teleportation_record"] = qds_record
+
+    return jsonify(triage_payload)
+
+
+@main_bp.route("/api/edge/benchmark", methods=["POST"])
+def api_edge_benchmark():
+    """Run local inference latency & throughput benchmark."""
+    data = request.get_json() or {}
+    iterations = int(data.get("iterations", 100))
+    res = run_edge_benchmark(num_iterations=iterations)
     return jsonify(res)
 
 
