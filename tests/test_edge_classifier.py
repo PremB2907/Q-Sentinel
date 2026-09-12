@@ -88,6 +88,28 @@ def test_deterministic_decision_preservation():
     assert payload_reject["triage"]["priority"] == "P1 - CRITICAL THREAT"
 
 
+def test_exact_mlp_architecture_and_params():
+    """Assert production model architecture is strictly 11 -> 32 -> 16 -> 3 with 963 parameters."""
+    clf = get_default_classifier()
+    assert clf.joblib_clf is not None or clf.ort_session is not None
+    
+    if clf.joblib_clf is not None:
+        model = clf.joblib_clf
+        assert model.hidden_layer_sizes == (32, 16)
+        assert model.n_features_in_ == 11
+        assert model.n_outputs_ == 3
+        
+        # Calculate total trainable parameters:
+        # Layer 1: 11*32 + 32 = 384
+        # Layer 2: 32*16 + 16 = 528
+        # Output:  16*3  + 3  = 51
+        # Total:   384 + 528 + 51 = 963
+        params_w = sum(w.size for w in model.coefs_)
+        params_b = sum(b.size for b in model.intercepts_)
+        total_params = params_w + params_b
+        assert total_params == 963
+
+
 def test_grounded_explanation_generation():
     evt = SecurityEvent(
         attack_type="replay",

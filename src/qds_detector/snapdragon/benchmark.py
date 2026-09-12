@@ -87,6 +87,6 @@ def run_edge_benchmark(num_iterations: int = 100, warmup_iterations: int = 10) -
         "throughput_fps": round(throughput, 2),
         "model_name": "q_sentinel_threat_classifier.onnx",
         "input_shape": "[1, 11]",
-        "model_architecture": "Compact MLP (11 -> 64 -> 32 -> 3)"
+        "model_architecture": "Compact MLP (11 -> 32 -> 16 -> 3)"
     }
 
