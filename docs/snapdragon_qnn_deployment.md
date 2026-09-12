@@ -36,7 +36,10 @@ ONNX Runtime session manager (`SnapdragonRuntimeManager`) checks hardware capabi
 | **Edge AI Inference** | ONNX Runtime (`CPUExecutionProvider`) | ONNX Runtime (`QNNExecutionProvider`) |
 | **Hardware Accelerator** | CPU / Host | Snapdragon Hexagon NPU |
 | **Privacy Model** | 100% Local (Zero Cloud Offload) | 100% Local (Zero Cloud Offload) |
-| **Model Format** | `.onnx` (12-feature Float32 tensor) | `.onnx` / QNN `.serialized` Graph |
+| **Model Format** | `.onnx` (11-feature Float32 tensor) | `.onnx` / QNN `.serialized` Graph |
+
+> [!IMPORTANT]
+> **REQUIRES SNAPDRAGON HARDWARE**: Snapdragon Hexagon NPU hardware execution requires deployment on physical Snapdragon Windows ARM64 PCs with the Qualcomm QNN SDK (`onnxruntime-qnn`). On Linux/Ubuntu development hosts, the runtime truthfully reports `CPU (OpenMP Fallback)` and displays NPU status as `Snapdragon NPU execution: NOT YET VERIFIED (Requires Snapdragon Hardware)`.
 
 ---
 
